@@ -1,12 +1,21 @@
-let startTime = Date.now();
+import { sendData } from './api-utility.js';
+(() => {
+    let startTime = Date.now();
+    let timeSpent = 0;
 
-// Function to calculate time spent
-function trackTimeSpent() {
-    let timeSpent = (Date.now() - startTime) / 1000; // Convert to seconds
-    console.log(`Time spent on page: ${timeSpent} seconds`);
+    // when tab visibility changes
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+            timeSpent = Date.now() - startTime;
+        }
+        else {
+            startTime = Date.now();
+        }
+    });
 
-    navigator.sendBeacon('/track-time', JSON.stringify({ timeSpent }));
-}
-
-// Capture time before user leaves
-window.addEventListener('beforeunload', trackTimeSpent);
+    // when user is about to leave the webpage
+    window.addEventListener("beforeunload", () => {
+        timeSpent = Date.now() - startTime;
+        sendData("time_tracker", { "timeSpent": timeSpent });
+    });
+})();
