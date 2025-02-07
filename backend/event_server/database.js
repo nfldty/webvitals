@@ -1,15 +1,22 @@
-const { Client } = require('pg');
+const { Pool } = require('pg');
 
-const client = new Client({
-  user: 'admin',
-  host: 'localhost',
-  database: 'database',
-  password: 'password',
-  port: 5432,
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 });
+// pooling is likely sufficient for handling multiple requests per second per client for now; may need to optimize/scale later
 
-client.connect()
-  .then(() => console.log('Connected to PostgreSQL'))
-  .catch(err => console.error('Connection error', err.stack));
+pool.connect()
+.then(client => {
+  console.log('Connected to PostgreSQL');
+  client.release();
+})
+.catch(err => console.error('Connection error', err.stack));
 
-module.exports = client;
+module.exports = pool;
