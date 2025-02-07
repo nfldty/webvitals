@@ -10,12 +10,17 @@ function makeid(length) {
     return result;
 }
 
+function getWebvitalsObj(){
+    if (!globalThis.webvitals) globalThis.webvitals = {};
+    return globalThis.webvitals
+}
+
 async function createWebSocket(url, onMessage, onOpen, onClose, onError) {
-    if (!this.io){
-        this.io = (await import("https://cdn.socket.io/4.7.2/socket.io.esm.min.js")).io;
+    if (!getWebvitalsObj().io){
+        getWebvitalsObj().io = (await import("https://cdn.socket.io/4.7.2/socket.io.esm.min.js")).io;
     }
-    if (this.socket && this.socket.connected) {
-        return this.socket;
+    if (getWebvitalsObj().socket && getWebvitalsObj().socket.connected) {
+        return getWebvitalsObj().socket;
     }
 
     if(!sessionStorage['webvitals-session-id']){
@@ -23,21 +28,21 @@ async function createWebSocket(url, onMessage, onOpen, onClose, onError) {
     }
 
     
-    this.socket = io(url, {auth:{
+    getWebvitalsObj().socket = getWebvitalsObj().io(url, {auth:{
             "session-id": sessionStorage['webvitals-session-id'],
-            "user-id": this.userId
+            "user-id": getWebvitalsObj().userId
     }});
     
 
-    if (onOpen) this.socket.on("connect", () => onOpen(socket));
-    if (onMessage) this.socket.on("message", (message) => onMessage(message));
-    if (onClose) this.socket.on("disconnect", onClose);
-    if (onError) this.socket.on("connect_error", onError);
+    if (onOpen) getWebvitalsObj().socket.on("connect", () => onOpen(socket));
+    if (onMessage) getWebvitalsObj().socket.on("message", (message) => onMessage(message));
+    if (onClose) getWebvitalsObj().socket.on("disconnect", onClose);
+    if (onError) getWebvitalsObj().socket.on("connect_error", onError);
 
-    return socket;
+    return getWebvitalsObj().socket;
 }
 
-export default async function sendData(eventId, data){
+export async function sendData(eventId, data){
     let socket = await createWebSocket("http://localhost:3000", null, null, null, null);
     if (eventId && data) {
         socket.emit(eventId, data);
