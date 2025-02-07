@@ -17,7 +17,7 @@ function trackTimeSpent() {
     window.addEventListener("beforeunload", () => {
         timeSpent = Date.now() - startTime;
         console.log('sending', timeSpent);
-        sendData("time_tracker", { "timeSpent": timeSpent });
+        sendData("time_tracker", { "time_spent": timeSpent });
     });
 }
 
