@@ -7,7 +7,12 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server,
+  {cors:{
+    "origin": "*",
+    "methods": ["GET", "POST"]
+  }}
+);
 
 app.get('/test', (req, res) => {
   res.json({ status: 'OK' });
@@ -72,6 +77,13 @@ io.use(async (socket, next) => {
   const err = new Error("Invalid authentication");
   err.data = { content: "Invalid authentication" };
   return next(err);
+});
+
+// debugging middleware to log all events
+io.use((socket, next) => {
+  const { session_id } = socket.handshake.auth;
+  console.log(`New event from session: ${session_id}`);
+  next();
 });
 
 io.on('connection', (socket) => {
