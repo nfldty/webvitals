@@ -43,6 +43,7 @@ async function createWebSocket(url, onMessage, onOpen, onClose, onError) {
 }
 
 export async function sendData(eventId, data){
+    console.log('sending', eventId, data)
     let socket = await createWebSocket("http://localhost:3000", null, null, null, null);
     if (eventId && data) {
         socket.emit(eventId, data);
