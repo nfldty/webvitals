@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: ./event_server
+    ports:
+      - '3000:3000'
+    environment:
+      - DB_HOST=localhost
+      - PORT=3000
+      - DB_USER=webvitals
+      - DB_PASSWORD=password
+      - DB_PORT=5432
+      - DB_NAME=db
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=webvitals
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
