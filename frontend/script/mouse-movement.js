@@ -3,7 +3,7 @@ import { sendData } from './api-utility.js';
 (function () {
     // Function to send mouse data (x, y, session ID, timestamp) to the backend
     function sendMouseData(x, y) {
-        sendData('mouse_movement', { "x": y, "y": y, "timestamp": Date.now() });
+        sendData('mouse_movement', { "x": x, "y": y, "timestamp": Date.now() });
         
     }
 
