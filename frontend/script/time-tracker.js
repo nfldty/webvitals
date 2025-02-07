@@ -14,6 +14,6 @@
     // when user is about to leave the webpage
     window.addEventListener("beforeunload", () => {
         timeSpent += Date.now() - startTime;
-        navigator.sendBeacon("/track-time", JSON.stringify({ timeSpent }));
+        sendData("time_tracker", { "timeSpent": timeSpent });
     });
 })();
