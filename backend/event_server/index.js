@@ -79,14 +79,11 @@ io.use(async (socket, next) => {
   return next(err);
 });
 
-// debugging middleware to log all events
-io.use((socket, next) => {
-  const { session_id } = socket.handshake.auth;
-  console.log(`New event from session: ${session_id}`);
-  next();
-});
 
 io.on('connection', (socket) => {
+  const { session_id } = socket.handshake.auth;
+  console.log(`New connection from session: ${session_id}`);
+
   socket.on('mouse_move', async ({ x, y }) => {
     const { user_id, session_id } = socket.handshake.auth;
     await pool.query(
