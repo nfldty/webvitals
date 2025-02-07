@@ -1,26 +1,44 @@
-let socket = null;
+function makeid(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+}
 
-function createWebSocket(url, onMessage, onOpen, onClose, onError) {
-    if (socket && socket.readyState !== WebSocket.CLOSED) {
-        return socket;
+async function createWebSocket(url, onMessage, onOpen, onClose, onError) {
+    if (!this.io){
+        this.io = (await import("https://cdn.socket.io/4.7.2/socket.io.esm.min.js")).io;
+    }
+    if (this.socket && this.socket.connected) {
+        return this.socket;
     }
 
-    socket = new WebSocket(url);
+    if(!sessionStorage['webvitals-session-id']){
+        sessionStorage['webvitals-session-id'] = makeid(32);
+    }
 
-    if (onOpen) socket.onopen = () => onOpen(socket);
-    if (onMessage) socket.onmessage = (event) => onMessage(event.data);
-    if (onClose) socket.onclose = (event) => {
-        socket = null;
-        if (onClose) onClose(event);
-    };
-    if (onError) socket.onerror = onError;
+    
+    this.socket = io(url, {auth:{
+            "session-id": sessionStorage['webvitals-session-id'],
+            "user-id": this.userId
+    }});
+    
+
+    if (onOpen) this.socket.on("connect", () => onOpen(socket));
+    if (onMessage) this.socket.on("message", (message) => onMessage(message));
+    if (onClose) this.socket.on("disconnect", onClose);
+    if (onError) this.socket.on("connect_error", onError);
 
     return socket;
 }
 
-createWebSocket("URL", null, null, null, null);
-
-function sendData(eventId, data){
+async function sendData(eventId, data){
+    let socket = await createWebSocket("http://localhost:3000", null, null, null, null);
     if (eventId && data) {
         socket.emit(eventId, data);
     }
