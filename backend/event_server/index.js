@@ -1,25 +1,13 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-const { Pool } = require('pg');
+const pool = require('./database');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
 const server = http.createServer(app);
 const io = new Server(server);
-
-const pool = new Pool({
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
-// pooling is likely sufficient for handling 60 requests per second per client for now; may need to optimize/scale later
 
 app.get('/test', (req, res) => {
   res.json({ status: 'OK' });
