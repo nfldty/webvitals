@@ -8,4 +8,4 @@ logs:
 	docker compose logs --follow
 
 db:
-	psql 'postgres://webvitals:P2b?sZ6Mo2N=@localhost:5432/db'
+	psql 'postgres://webvitals:password@localhost:5432/db'

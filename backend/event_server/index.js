@@ -1,7 +1,7 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-const { Pool } = require('pg');
+const pool = require('./database');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -9,32 +9,21 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-const pool = new Pool({
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
-// pooling is likely sufficient for handling 60 requests per second per client for now; may need to optimize/scale later
-
 app.get('/test', (req, res) => {
   res.json({ status: 'OK' });
 });
 
-// event_name's, and the entities they modify:
+// event_name's, and the tables they modify:
 /*
 mouse_move
-  MouseMovement
+  mouse_movement
 page_visit
-  Session
-  PageVisit
+  sessions
+  page_visits
+time_tracker
+  time_spent
 session_end
-  Session
-  TimeSpent
+  sessions
 
 the event_name is passed as the event name using socket.io.
 start a session with:
@@ -55,42 +44,87 @@ page_visit:
   "page_url": "https://www.example.com/page1",
 }
 
+time_tracker:
+{
+  "time_spent": 30000, // 30 seconds
+}
+
 session_end:
 {}
 */
 
-io.use((socket, next) => {
+io.use(async (socket, next) => {
+  // socket.handshake.auth contains the session_id and user_id
+  // create new session if it doesn't exist, linked with user_id
   const { session_id, user_id } = socket.handshake.auth;
   if (session_id && user_id) {
+    // check that user_id exists
+    const user = await pool.query('SELECT * FROM users WHERE id = $1', [user_id]);
+    if (user.rows.length === 0) {
+      const err = new Error("Invalid authentication");
+      err.data = { content: "Invalid authentication" };
+      return next(err);
+    }
+
+    pool.query('INSERT INTO sessions (id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING', [session_id, user_id]); // upsert session
     return next();
   }
   const err = new Error("Invalid authentication");
   err.data = { content: "Invalid authentication" };
-  next(err);
+  return next(err);
 });
 
 io.on('connection', (socket) => {
-  // socket.handshake.auth contains the session_id and user_id
-  // create new session if it doesn't exist, linked with user_id
-
-  socket.on('mouse_move', async (data) => {
-    // record mouse_move for session_id
-    const { session_id } = socket.handshake.auth;
-    await pool.query('SELECT NOW()');
+  socket.on('mouse_move', async ({ x, y }) => {
+    const { user_id, session_id } = socket.handshake.auth;
+    await pool.query(
+      'INSERT INTO mouse_movement (user_id, session_id, x_coord, y_coord) VALUES ($1, $2, $3, $4)',
+      [user_id, session_id, x, y]
+    );
   });
-
-  socket.on('page_visit', async (data) => {
-    // get current page in session
-    // make new row in PageVisit with page_id, session_id, and timestamp
-    // set new current page in session with current timestamp
-    const { session_id } = socket.handshake.auth;
-    await pool.query('SELECT NOW()');
+  
+  socket.on('page_visit', async ({ page_url }) => {
+    const { user_id, session_id } = socket.handshake.auth;
+    await pool.query(
+      `UPDATE page_visits
+      SET left_at = NOW()
+      WHERE session_id = $1
+      AND left_at IS NULL`,
+      [session_id]
+    ); // set left_at for previous page visit, new page visit will have NULL left_at
+  
+    await pool.query(
+      'INSERT INTO page_visits (user_id, session_id, page_url) VALUES ($1, $2, $3)',
+      [user_id, session_id, page_url]
+    );
   });
-
-  socket.on('session_end', async (data) => {
-    // record time_spent for session_id
+  
+  socket.on('time_tracker', async ({ time_spent }) => {
+    const { user_id, session_id } = socket.handshake.auth;
+    await pool.query(
+      `UPDATE time_spent
+      SET elapsed_time = elapsed_time + $3, last_modified = NOW()
+      WHERE user_id = $1
+      AND session_id = $2`,
+      [user_id, session_id, time_spent]
+    ); // update iff row exists
+  
+    await pool.query(
+      `INSERT INTO time_spent (user_id, session_id, elapsed_time)
+      SELECT $1, $2, $3
+      WHERE NOT EXISTS (
+        SELECT 1 FROM time_spent WHERE user_id = $1 AND session_id = $2
+      )`,
+      [user_id, session_id, time_spent]
+    ); // in case no row exists create one
+  });
+  
+  socket.on('session_end', async () => {
     const { session_id } = socket.handshake.auth;
-    await pool.query('SELECT NOW()');
+    await pool.query(
+      'UPDATE sessions SET end_time = NOW() WHERE id = $1',
+      [session_id]
+    );
   });
 });
 
