@@ -1,3 +1,4 @@
+import { sendData } from './api-utility.js';
 (() => {
     let startTime = Date.now();
     let timeSpent = 0;
@@ -6,14 +7,15 @@
     document.addEventListener("visibilitychange", () => {
         if (document.hidden) {
             timeSpent = Date.now() - startTime;
-        } else {
-            startTime = Date.now()
+        }
+        else {
+            startTime = Date.now();
         }
     });
 
     // when user is about to leave the webpage
     window.addEventListener("beforeunload", () => {
-        timeSpent += Date.now() - startTime;
+        timeSpent = Date.now() - startTime;
         sendData("time_tracker", { "timeSpent": timeSpent });
     });
 })();
