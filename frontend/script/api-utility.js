@@ -37,7 +37,7 @@ async function createWebSocket(url, onMessage, onOpen, onClose, onError) {
     return socket;
 }
 
-async function sendData(eventId, data){
+export default async function sendData(eventId, data){
     let socket = await createWebSocket("http://localhost:3000", null, null, null, null);
     if (eventId && data) {
         socket.emit(eventId, data);
