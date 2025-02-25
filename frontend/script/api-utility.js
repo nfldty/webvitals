@@ -27,10 +27,11 @@ async function createWebSocket(url, onMessage, onOpen, onClose, onError) {
         sessionStorage['webvitals-session-id'] = makeid(32);
     }
 
-    
+    getWebvitalsObj().userId = 1; // hardcoded for now
+
     getWebvitalsObj().socket = getWebvitalsObj().io(url, {auth:{
-            "session-id": sessionStorage['webvitals-session-id'],
-            "user-id": getWebvitalsObj().userId
+            "session_id": sessionStorage['webvitals-session-id'],
+            "user_id": getWebvitalsObj().userId
     }});
     
 
@@ -43,6 +44,7 @@ async function createWebSocket(url, onMessage, onOpen, onClose, onError) {
 }
 
 export async function sendData(eventId, data){
+    console.log('sending', eventId, data)
     let socket = await createWebSocket("http://localhost:3000", null, null, null, null);
     if (eventId && data) {
         socket.emit(eventId, data);

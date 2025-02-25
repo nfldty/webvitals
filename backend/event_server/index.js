@@ -7,7 +7,12 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server,
+  {cors:{
+    "origin": "*",
+    "methods": ["GET", "POST"]
+  }}
+);
 
 app.get('/test', (req, res) => {
   res.json({ status: 'OK' });
@@ -74,7 +79,11 @@ io.use(async (socket, next) => {
   return next(err);
 });
 
+
 io.on('connection', (socket) => {
+  const { session_id } = socket.handshake.auth;
+  console.log(`New connection from session: ${session_id}`);
+
   socket.on('mouse_move', async ({ x, y }) => {
     const { user_id, session_id } = socket.handshake.auth;
     await pool.query(
