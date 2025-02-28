@@ -9,20 +9,20 @@ import {
 
 const router = createBrowserRouter([
   {
-    path: '/*',
-    element: <Login />, // You might want to set this as the default route
-  },
-  {
-    path: '/home',
+    path: '/app/home',
     element: <Dashboard />,
   },
   {
-    path: '/register',
+    path: '/app/register',
     element: <Register />,
   },
   {
-    path: '/login',
+    path: '/app/login',
     element: <Login />,
+  },
+  {
+    path: '/app/*',
+    element: <Login />, // You might want to set this as the default route
   },
 ]);
 
