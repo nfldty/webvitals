@@ -65,7 +65,7 @@ async function createWebSocket(url, onMessage, onOpen, onClose, onError) {
 // Function to send data via WebSocket
 export async function sendData(eventId, data) {
     console.log('sending', eventId, data);
-    const socket = await createWebSocket("http://localhost:3000", null, null, null, null);
+    const socket = await createWebSocket(process.env.SERVER_URL, null, null, null, null);
     if (eventId && data) {
         socket.emit(eventId, data);
     }

@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' http://localhost; object-src 'none';"> -->
     <title>Sample HTML</title>
 </head>
 <body>
     <h1>Hello World</h1>    
-    <script type="module" data-webvitals-widget src="./widget.js" data-user-id="1" defer></script>
+    <script type="module" data-webvitals-widget src="http://localhost/widget/widget.js" data-user-id="1" defer></script>
     <!-- <script type="module" data-webvitals-widget src="./src/tracker.js" data-user-id="1" defer></script>  This is for dev testing -->
 </body>
 </html>

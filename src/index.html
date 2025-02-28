@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Socket.IO Test</title>
+  <!-- Use the appropriate version; this example uses 4.x -->
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+  <script>
+    // Connect to the backend server with auth data (adjust as needed)
+    const socket = io("http://localhost", {
+      auth: {
+        user_id: "1",        // replace with a valid user_id
+        session_id: "testSession123"  // replace with a valid session_id
+      }
+    });
+
+    socket.on("connect", () => {
+      console.log("Connected to server with id:", socket.id);
+      // Send a mouse_move event with sample coordinates
+      socket.emit("mouse_move", { x: 150, y: 250 });
+    });
+
+    socket.on("connect_error", (err) => {
+      console.error("Connection error:", err);
+    });
+  </script>
+</body>
+</html>

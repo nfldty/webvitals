@@ -62,6 +62,7 @@ io.use(async (socket, next) => {
   // socket.handshake.auth contains the session_id and user_id
   // create new session if it doesn't exist, linked with user_id
   const { session_id, user_id } = socket.handshake.auth;
+  console.log("session_id: ", session_id);
   if (session_id && user_id) {
     // check that user_id exists
     const user = await pool.query('SELECT * FROM users WHERE id = $1', [user_id]);
@@ -85,6 +86,7 @@ io.on('connection', (socket) => {
   console.log(`New connection from session: ${session_id}`);
 
   socket.on('mouse_move', async ({ x, y }) => {
+    console.log(`Mouse moved to: ${x}, ${y}`);
     const { user_id, session_id } = socket.handshake.auth;
     await pool.query(
       'INSERT INTO mouse_movement (user_id, session_id, x_coord, y_coord) VALUES ($1, $2, $3, $4)',
@@ -142,6 +144,10 @@ io.on('connection', (socket) => {
       'INSERT INTO users ',
       [session_id]
     );
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`Session ${session_id} disconnected`);
   });
 
 });
