@@ -11,6 +11,7 @@ services:
       - DB_PASSWORD=password
       - DB_PORT=5432
       - DB_NAME=db
+      - DB_URL=postgresql://webvitals:password@postgres:5432/db
     depends_on:
       postgres:
         condition: service_healthy
@@ -23,8 +24,6 @@ services:
       - POSTGRES_DB=db
     ports:
       - '5432:5432'
-    volumes:
-      - ./database:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U webvitals -d db"]
       interval: 5s
