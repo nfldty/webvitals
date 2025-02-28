@@ -135,6 +135,15 @@ io.on('connection', (socket) => {
       [session_id]
     );
   });
+
+  socket.on('userReg', async () => {
+    const { session_id } = socket.handshake.auth;
+    await pool.query(
+      'INSERT INTO users ',
+      [session_id]
+    );
+  });
+
 });
 
 server.listen(PORT, () => {
