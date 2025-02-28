@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { sendData } from '../script/api-utility.js'
+import { sendData } from '../utils/api.js'
 
 export const Register = () => {
   const [inputs, setInputs] = useState({

@@ -29,3 +29,11 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  proxy:
+    build:
+      context: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - event-server
