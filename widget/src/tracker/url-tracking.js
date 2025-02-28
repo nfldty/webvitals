@@ -1,4 +1,4 @@
-import { sendData } from '../../src/newap/api-utility.js';
+import { sendData } from '../api-utility.js';
 
 
 /**

@@ -1,6 +1,13 @@
 // Define globalThis explicitly if needed
 const globalThis = window || global;
 
+const widgetScript = document.querySelector('script[data-webvitals-widget]');
+if (widgetScript) {
+  const userId = widgetScript.getAttribute('data-user-id');
+  getWebvitalsObj().userId = userId;
+  console.log("Webvitals initialized with user: ", userId);
+}
+
 // Function to generate a random session ID
 function makeid(length) {
     let result = '';

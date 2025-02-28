@@ -16,4 +16,4 @@ window.addEventListener('load', () => {
     }
   
     // You can send these metrics to a server or log them for analysis
-  });  
+  });

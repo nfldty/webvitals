@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import FilterSelector from "../components/FilterSelector";
 
 export const Dashboard = () => {

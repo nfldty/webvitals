@@ -12,6 +12,6 @@ The Makefile contains the following shortcuts:
 
 Install `http-server` globally using npm: `npm install -g http-server`
 
-Pivot to `frontend/` and run `http-server --cors -p 8000` to serve index.html.
+Pivot to `widget/` and run `http-server --cors -p 8000` to serve index.html.
 
 Start the event server with `make up` and go to http://localhost:8000.
