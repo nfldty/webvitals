@@ -1,0 +1,66 @@
+/* Container for the entire dashboard */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Header styling */
+  .dashboard-header {
+    background-color: #0078d4;
+    color: #fff;
+    padding: 1rem 2rem;
+  }
+  
+  /* Layout for sidebar and main content */
+  .dashboard-content {
+    display: flex;
+    flex: 1;
+  }
+  
+  /* Sidebar navigation styling */
+  .dashboard-sidebar {
+    width: 200px;
+    background-color: #f3f2f1;
+    padding: 1rem;
+  }
+  
+  .dashboard-sidebar nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .dashboard-sidebar nav li {
+    margin: 1rem 0;
+    cursor: pointer;
+  }
+  
+  /* Main content area styling */
+  .dashboard-main {
+    flex: 1;
+    padding: 1rem 2rem;
+    background-color: #faf9f8;
+  }
+  
+  /* Widget card style based on your original snippet container */
+  .widget-card {
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+    text-align: center;
+  }
+  
+  .widget-card input {
+    width: 100%;
+    margin: 1rem 0;
+  }
+  
+  /* Title styling for the dashboard */
+  .dashboard-title {
+    text-align: center;
+    margin-top: 2rem;
+  }
+  
