@@ -130,6 +130,14 @@ io.on('connection', (socket) => {
     ); // in case no row exists create one
   });
   
+  socket.on('user_journey', async ({ page_url, time_spent }) => {
+    const { user_id, session_id } = socket.handshake.auth;
+    await pool.query(
+      'INSERT INTO user_journey (user_id, session_id, page_url, time_spent) VALUES ($1, $2, $3, $4)',
+      [user_id, session_id, page_url, time_spent]
+    );
+  });
+
   socket.on('session_end', async () => {
     const { session_id } = socket.handshake.auth;
     await pool.query(

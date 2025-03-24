@@ -38,4 +38,12 @@ CREATE TABLE IF NOT EXISTS time_spent (
     last_modified TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS user_journey (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) NOT NULL,
+    session_id TEXT REFERENCES sessions(id) NOT NULL,
+    page_url TEXT NOT NULL,
+    time_spent INTEGER NOT NULL
+);
+
 INSERT INTO users (id, username, password) VALUES (1, 'admin', 'admin'); -- TODO hash passwords when implementing dashboard
