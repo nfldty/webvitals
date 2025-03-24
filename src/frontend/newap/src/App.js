@@ -28,9 +28,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <div>
-      <div className="app">
-        <div className="container">
+    <div role="application">
+      <div className="app" role="main">
+        <div className="container" role="region" aria-label="content">
           <RouterProvider router={router} />
         </div>
       </div>
