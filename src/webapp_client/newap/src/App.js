@@ -8,7 +8,7 @@ import {
 } from "react-router";
 
 const router = createBrowserRouter([
-  {
+
     path: '/app/home',
     element: <Dashboard />,
   },
