@@ -7,8 +7,9 @@ import {
   RouterProvider,
 } from "react-router";
 
-const router = createBrowserRouter([
 
+const router = createBrowserRouter([
+  {
     path: '/app/home',
     element: <Dashboard />,
   },
@@ -22,7 +23,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/app/*',
-    element: <Login />, // You might want to set this as the default route
+    element: <Login />, // This serves as a fallback route
   },
 ]);
 
