@@ -25,7 +25,7 @@ export const Login = () => {
           </button>
           <span className="text-sm text-center">
             Don&apos;t have an account?{' '}
-            <Link to="/register" className="text-blue-600 hover:underline">
+            <Link to="/app/register" className="text-blue-600 hover:underline">
               Register
             </Link>
           </span>
