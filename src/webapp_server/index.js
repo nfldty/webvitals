@@ -1,12 +1,9 @@
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
-const fs = require('fs');
-const csvWriter = require('csv-writer').createObjectCsvWriter;
-const pdfKit = require('pdfkit');
-
+const pool = require('./database');
+const PORT = process.env.WEBAPP_SERVER_PORT || 3001;
 const app = express();
-const prisma = new PrismaClient();
-const PORT = process.env.PORT || 3000;
+app.use(express.json());
+
 
 // Fetch metrics from database
 async function getMetrics() {
@@ -62,5 +59,9 @@ app.get('/export/pdf', async (req, res) => {
     doc.end();
     doc.on('end', () => res.download(filePath, 'metrics.pdf', () => fs.unlinkSync(filePath)));
 });
+
+app.get('/test', (req, res) => {
+    res.json({ status: 'OK' });
+  });
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
