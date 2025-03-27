@@ -1,30 +1,232 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Socket.IO Test</title>
-  <!-- Use the appropriate version; this example uses 4.x -->
-  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Page with Vanishing Line and Click Effect</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .large-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .large-button:hover {
+            background-color: #0056b3;
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .scrollable-list {
+            height: 200px;
+            overflow-y: scroll;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: #fff;
+        }
+        .scrollable-list ul {
+            padding: 0;
+            list-style-type: none;
+        }
+        .scrollable-list li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Virtual cursor styling */
+        #virtual-cursor {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: red;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Click effect styling */
+        .click-effect {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(255, 0, 0, 0.6);
+            border-radius: 50%;
+            animation: vanish 0.5s forwards;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        @keyframes vanish {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-  <script>
-    // Connect to the backend server with auth data (adjust as needed)
-    const socket = io("http://localhost", {
-      auth: {
-        user_id: "1",        // replace with a valid user_id
-        session_id: "testSession123"  // replace with a valid session_id
+
+    <div class="container">
+        <h1>Basic Page</h1>
+
+        <!-- Large Button -->
+        <button class="large-button" onclick="alert('Button Clicked!')">Click Me</button>
+
+        <!-- Image -->
+        <div class="image-container">
+            <img src="https://placehold.co/600x400" alt="Sample Image">
+        </div>
+
+        <!-- Scrollable List -->
+        <div class="scrollable-list">
+            <ul>
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3</li>
+                <li>Item 4</li>
+                <li>Item 5</li>
+                <li>Item 6</li>
+                <li>Item 7</li>
+                <li>Item 8</li>
+                <li>Item 9</li>
+                <li>Item 10</li>
+            </ul>
+        </div>
+    </div>
+
+    <canvas id="lineCanvas" style="position: absolute; top: 0; left: 0; z-index: 1000;"></canvas>
+
+    <script>
+      const canvas = document.getElementById("lineCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+  
+      let lastX = null, lastY = null;
+
+      const cursor = document.createElement("div");
+      cursor.id = "virtual-cursor";
+      document.body.appendChild(cursor);
+  
+      cursor.style.position = "absolute";
+      cursor.style.width = "15px";
+      cursor.style.height = "15px";
+      cursor.style.backgroundColor = "red";
+      cursor.style.borderRadius = "50%";
+      cursor.style.pointerEvents = "none";
+      cursor.style.zIndex = "9999";
+  
+      window.addEventListener('message', function(event) {
+          if (event.origin !== 'http://localhost:5000') return;
+          console.log("processing",event)
+          const data = event.data;
+
+          if (data.type === 'event') {
+              // Process the single event
+              processEvent(data.event);
+          }
+      });
+
+      function processEvent(event) {
+          
+          if (event.type === 'mousemove') {
+              simulateMouseMove(event.x, event.y);
+          } else if (event.type === 'click') {
+              simulateClick(event.x, event.y);
+          }
       }
-    });
+  
+      function simulateMouseMove(x, y) {
+          cursor.style.left = `${x}px`;
+          cursor.style.top = `${y}px`;
+  
+          if (lastX !== null && lastY !== null) {
+              drawVanishingLine(lastX, lastY, x, y);
+          }
+  
+          lastX = x;
+          lastY = y;
+  
+          const element = document.elementFromPoint(x, y);
+          if (element) {
+              const mouseMoveEvent = new MouseEvent('mousemove', {
+                  clientX: x,
+                  clientY: y,
+                  bubbles: true,
+                  cancelable: true,
+              });
+  
+              element.dispatchEvent(mouseMoveEvent);
+          }
+      }
 
-    socket.on("connect", () => {
-      console.log("Connected to server with id:", socket.id);
-      // Send a mouse_move event with sample coordinates
-      socket.emit("mouse_move", { x: 150, y: 250 });
-    });
-
-    socket.on("connect_error", (err) => {
-      console.error("Connection error:", err);
-    });
+      function simulateClick(x, y) {
+        // Always display the click effect regardless of whether an element is found
+        const clickEffect = document.createElement("div");
+        clickEffect.classList.add("click-effect");
+        clickEffect.style.left = `${x - 15}px`;
+        clickEffect.style.top = `${y - 15}px`;
+        document.body.appendChild(clickEffect);
+    
+        setTimeout(() => {
+            clickEffect.remove();
+        }, 500); // Remove click effect after animation
+    
+        // Check if there is an element under the cursor
+        const element = document.elementFromPoint(x, y);
+        if (element) {
+            const clickEvent = new Event('click', {
+                bubbles: true,
+                cancelable: true,
+            });
+            element.dispatchEvent(clickEvent);
+        }
+      }
+  
+      function drawVanishingLine(startX, startY, endX, endY) {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "rgba(255, 0, 0, 0.6)";
+          ctx.lineJoin = "round";
+          ctx.beginPath();
+          ctx.moveTo(startX, startY);
+          ctx.lineTo(endX, endY);
+          ctx.stroke();
+  
+          setTimeout(() => {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }, 100);
+      }
   </script>
 </body>
 </html>

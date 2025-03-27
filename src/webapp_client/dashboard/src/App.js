@@ -1,6 +1,7 @@
 import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register"
 import Login from "./pages/Login"
+import SessionReplay from "./pages/SessionReplay"
 
 import {
   createBrowserRouter,
@@ -22,7 +23,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/*',
-    element: <Login />, // You might want to set this as the default route
+    element: <SessionReplay />, // You might want to set this as the default route
   },
 ]);
 
