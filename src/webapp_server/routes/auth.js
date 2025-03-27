@@ -1,7 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const pool = require('../database');
 const prisma = require('../../prisma/prismaClient');
 require('dotenv').config();
 
