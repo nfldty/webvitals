@@ -2,12 +2,19 @@ FROM node:23-alpine
 
 WORKDIR /app
 
-COPY ./package.json .
+COPY webapp_server/package*.json ./
 
+# Install dependencies
 RUN npm install
 
-COPY . .
+# Copy the webapp_server code
+COPY webapp_server/ .
 
-RUN npx prisma generate
+# Copy the shared prisma folder
+COPY prisma ./prisma
 
+# Generate the Prisma client
+RUN npx prisma generate --schema=./prisma/schema.prisma
+
+# Start the server
 CMD ["npm", "run", "start"]

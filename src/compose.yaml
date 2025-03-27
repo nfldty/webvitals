@@ -1,7 +1,8 @@
 services:
   analytics-server:
     build:
-      context: ./analytics_server
+      context: .
+      dockerfile: analytics_server/Dockerfile
     ports:
       - '3000:3000'
     environment:
@@ -17,7 +18,8 @@ services:
         condition: service_healthy
   webapp-server:
     build:
-      context: ./webapp_server
+      context: .
+      dockerfile: webapp_server/Dockerfile
     ports:
       - '3001:3001'
     environment:

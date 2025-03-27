@@ -8,7 +8,17 @@ async function main() {
     create: {
       id: "1",
       username: "admin",
-      password: "password"
+      password: "$2y$10$41f.V7MXsnNiY4FWIvwDXu7DDZxZh3MEUKCaBKHTObBi2xs79Ey5G"
+    },
+  });
+
+  const adminUser2 = await prisma.user.upsert({
+    where: { id: "2" },
+    update: {},
+    create: {
+      id: "2",
+      username: "men",
+      password: "$2y$10$41f.V7MXsnNiY4FWIvwDXu7DDZxZh3MEUKCaBKHTObBi2xs79Ey5G"
     },
   });
 
