@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import FilterSelector from "../components/FilterSelector";
 import '../style.css';
 
@@ -6,6 +7,15 @@ export const Dashboard = () => {
   const [filters, setFilters] = useState({});
   // Convert the snippet into a string so it can be displayed in an input.
   const snippet = `<script type="module" data-webvitals-widget src="http://localhost/widget.js" data-user-id="1" defer></script>`;
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    // Implement logout logic here (e.g., clear tokens, redirect, etc.)
+    console.log("User logged out");
+    localStorage.setItem('authToken', '');
+    navigate('/app/login');
+
+    // For example: window.location.href = '/login';
+  };
 
   return (
     <div className="dashboard-container">
@@ -20,6 +30,11 @@ export const Dashboard = () => {
               <li>Sessions</li>
               <li>Insights</li>
               <li>Settings</li>
+              <li>
+                <button onClick={handleLogout} className="logout-button">
+                  Logout
+                </button>
+              </li>
             </ul>
           </nav>
         </aside>
