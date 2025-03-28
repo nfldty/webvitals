@@ -7,7 +7,9 @@ const {
     getAveragePagesPerSession,
     getLiveUsers,
     getAverageTimePerPage,
-    getAverageTotalTime
+    getAverageTotalTime,
+    getClickStatistics,
+    getExtraData
 } = require('../utils/metrics');
 
 // Create a single API route to fetch all statistics for a specific user
@@ -31,7 +33,9 @@ router.get('/statistics', async (req, res) => {
         const avgPagesPerSession = await getAveragePagesPerSession(userId);
         const liveUsers = await getLiveUsers(userId); // Assuming this function can handle userId
         const avgTotalTime = await getAverageTotalTime(userId);
+        const clickStatistics = await getClickStatistics(userId);
         const avgTimePerPage = await getAverageTimePerPage(userId);
+        const extraData = await getExtraData(userId);
   
         // Combine all statistics into a single response
         const statistics = {
@@ -41,7 +45,9 @@ router.get('/statistics', async (req, res) => {
             avgPagesPerSession,
             liveUsers,
             avgTotalTime,
-            avgTimePerPage
+            clickStatistics,
+            avgTimePerPage,
+            extraData
         };
   
         res.json(statistics);

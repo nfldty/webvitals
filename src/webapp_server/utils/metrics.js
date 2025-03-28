@@ -144,6 +144,91 @@ async function getAverageTotalTime(userId) {
   }
 }
 
+async function getClickStatistics(userId) {
+  try {
+    
+    const clicks = await prisma.mouseClick.count({
+      where: { userId: userId },
+    });
+    
+    const rageClicks = await prisma.mouseClick.count({
+      where: { userId: userId, isRage: true },
+    });
+    
+    const deadClicks = await prisma.mouseClick.count({
+      where: { userId: userId, isDead: true },
+    });
+    
+    const quickBack = await prisma.mouseClick.count({
+      where: { userId: userId, isQuickBack: true },
+    });
+    
+    const ragePercent = clicks === 0 ? '0.00%' : ((rageClicks / clicks) * 100).toFixed(2) + '%';
+    const deadPercent = clicks === 0 ? '0.00%' : ((deadClicks / clicks) * 100).toFixed(2) + '%';
+    const quickBackPercent = clicks === 0 ? '0.00%' : ((quickBack / clicks) * 100).toFixed(2) + '%';
+    
+    return {
+      rage_click: {
+        count: rageClicks,
+        percentage: ragePercent,
+      },
+      dead_click: {
+        count: deadClicks,
+        percentage: deadPercent,
+      },
+      quick_back: {
+        count: quickBack,
+        percentage: quickBackPercent,
+      },
+    };
+    
+  } catch (error) {
+    
+    console.error('Error fetching mouse click statistics for user:', userId, error);
+    throw error;
+    
+  }
+}
+
+async function getExtraData(userId) {
+  try {
+    const totalCount = await prisma.extraData.count({
+      where: { userId },
+    });
+  
+    // Function to get grouped data and format with count & percentage
+    async function getGroupedData(field) {
+      const groupedData = await prisma.extraData.groupBy({
+        by: [field],
+        where: { userId },
+        _count: { [field]: true },
+      });
+  
+      return groupedData.map(item => ({
+        [field]: item[field],
+        count: item._count[field],
+        percentage: ((item._count[field] / totalCount) * 100).toFixed(2) + '%',
+      }));
+    }
+
+    const [browserData, osData, mobileData, referrerData] = await Promise.all([
+      getGroupedData('browserName'),
+      getGroupedData('operatingSystem'),
+      getGroupedData('isMobile'),
+      getGroupedData('referrer'),
+    ]);
+
+    return {
+      browserUsage: browserData,
+      operatingSystemUsage: osData,
+      isMobileUsage: mobileData,
+      referrerUsage: referrerData,
+    };
+  } catch (error) {
+    console.error('Error fetching extra data:', error);
+  }
+}
+
 module.exports = {
   getMostTraffic,
   getLeastTraffic,
@@ -152,4 +237,5 @@ module.exports = {
   getLiveUsers,
   getAverageTimePerPage,
   getAverageTotalTime,
+  getExtraData
 };
