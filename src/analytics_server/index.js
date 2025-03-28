@@ -152,7 +152,7 @@ io.on('connection', (socket) => {
     const { user_id, session_id } = socket.handshake.auth;
     let parsed = userAgentParser.parseUserAgent(userAgent);
     await pool.query(
-      'INSERT INTO extra_data (user_id, session_id, browser_name, operating_system, is_mobile, referrer) VALUES ($1, $2, $3, $4)',
+      'INSERT INTO extra_data (user_id, session_id, browser_name, operating_system, is_mobile, referrer) VALUES ($1, $2, $3, $4, $5, $6)',
       [user_id, session_id, parsed.browser_name, parsed.operating_system_name, parsed.is_mobile, referrer]
     );
   });
