@@ -11,16 +11,20 @@ const operatorMap = {
       prismaQuery.where = {};
     }
   
-    // Filter sessions by startTime directly on the session model
-    if (queryParams.start_time || queryParams.end_time) {
-      prismaQuery.where.startTime = {
-        gte: queryParams.start_time ? new Date(queryParams.start_time) : undefined,
-        lte: queryParams.end_time ? new Date(queryParams.end_time) : undefined,
-      };
+    // Build date filter object only if valid values exist
+    const dateFilter = {};
+    if (queryParams.start_time && queryParams.start_time.trim() !== "") {
+      dateFilter.gte = new Date(queryParams.start_time);
+    }
+    if (queryParams.end_time && queryParams.end_time.trim() !== "") {
+      dateFilter.lte = new Date(queryParams.end_time);
+    }
+    if (Object.keys(dateFilter).length > 0) {
+      prismaQuery.where.startTime = dateFilter;
     }
   
-    // Filter by page URL on the related pageVisits relation
-    if (queryParams.page_url) {
+    // Only add page_url filter if provided
+    if (queryParams.page_url && queryParams.page_url.trim() !== "") {
       prismaQuery.where.pageVisits = {
         some: {
           pageUrl: { contains: queryParams.page_url, mode: "insensitive" },
@@ -28,8 +32,8 @@ const operatorMap = {
       };
     }
   
-    // Filter by elapsed time on the related timeSpent relation
-    if (queryParams.elapsed_time) {
+    // Only add elapsed_time filter if provided
+    if (queryParams.elapsed_time && queryParams.elapsed_time.trim() !== "") {
       const match = queryParams.elapsed_time.match(/(<=?|>=?|=)(\d+)/);
       if (match) {
         const [, operator, value] = match;
