@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const pool = require('./database');
+const userAgentParser = require('parse-user-agent');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -93,6 +94,15 @@ io.on('connection', (socket) => {
       [user_id, session_id, x, y]
     );
   });
+
+  socket.on('mouse_click', async ({ x, y, isRage, isDead, isQuickBack }) => {
+    console.log(`Mouse clicked at: ${x}, ${y}`);
+    const { user_id, session_id } = socket.handshake.auth;
+    await pool.query(
+      'INSERT INTO mouse_click (user_id, session_id, x_coord, y_coord, is_rage, is_dead, is_quick_back) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+      [user_id, session_id, x, y, isRage, isDead, isQuickBack]
+    );
+  });
   
   socket.on('page_visit', async ({ page_url }) => {
     const { user_id, session_id } = socket.handshake.auth;
@@ -138,11 +148,12 @@ io.on('connection', (socket) => {
     );
   });
 
-  socket.on('user_journey', async ({ page_url, time_spent }) => {
+  socket.on('extra_data_tracking', async ({ userAgent, referrer }) => {
     const { user_id, session_id } = socket.handshake.auth;
+    let parsed = userAgentParser.parseUserAgent(userAgent);
     await pool.query(
-      'INSERT INTO user_journey (user_id, session_id, page_url, time_spent) VALUES ($1, $2, $3, $4)',
-      [user_id, session_id, page_url, time_spent]
+      'INSERT INTO extra_data (user_id, session_id, browser_name, operating_system, is_mobile, referrer) VALUES ($1, $2, $3, $4)',
+      [user_id, session_id, parsed.browser_name, parsed.operating_system_name, parsed.is_mobile, referrer]
     );
   });
 
