@@ -69,19 +69,23 @@ export async function getAveragePagesPerSession(userId) {
 
 export async function getLiveUsers(userId) {
     try {
-      // Find sessions where the user is active (endTime is null)
-      const liveSessions = await prisma.session.count({
-        where: {
-          userId: userId,  // Filter by userId
-          endTime: null,  // Only consider live sessions (not ended)
-        },
-      });
-  
-      // Return the number of live sessions
-      return liveSessions;
+        const sessions = await prisma.session.findMany({
+            where: { userId: userId } 
+        });
+        let liveSessions = 0;
+        for (const session of sessions) {
+            const latestMovement = await prisma.mouseMovement.findFirst({
+                where: { sessionId: session.id },
+                orderBy: { createdAt: 'desc' }
+            });
+            if (latestMovement && (new Date() - latestMovement.createdAt) / 1000 < 300) {
+                liveSessions++; 
+            }
+        }
+        return liveSessions; 
     } catch (error) {
-      console.error('Error fetching current live users for user:', error);
-      throw error;
+        console.error('Error fetching current live users for user:', error);
+        throw error;
     }
 }
 
