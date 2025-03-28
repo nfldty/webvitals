@@ -257,40 +257,42 @@ const recordedEvents = [
     }, []);
   
     return (
-      <div style={{ textAlign: "center", padding: "20px" }}>
-        <h1>Session Replay</h1>
-  
-        {/* Controls */}
-        <button onClick={handleStart} disabled={isPlaying} style={{ marginRight: "10px" }}>
-          Start
-        </button>
-        <button onClick={handlePause} disabled={!isPlaying} style={{ marginLeft: "10px" }}>
-          Pause
-        </button>
-  
-        <label style={{ marginLeft: "10px" }}>
-          Speed:
-          <input
-            type="range"
-            min="0.5"
-            max="3"
-            step="0.1"
-            value={replaySpeed}
-            onChange={handleSpeedChange}
-            style={{ marginLeft: "10px" }}
-          />
-          {replaySpeed}x
-        </label>
-  
-        {/* iFrame for replaying session */}
-        <iframe
-          ref={iframeRef}
-          id="replay-iframe"
-          src="http://localhost:3000/src/index.html?webvitals-tracking-switch=False"
-          width={screenSize.width}
-          height={screenSize.height}
-          style={{ border: "1px solid black", marginTop: "20px" }}
-        ></iframe>
+      <div className="session-container">
+        <div style={{ textAlign: "center", padding: "20px" }}>
+          <h1>Session Replay</h1>
+    
+          {/* Controls */}
+          <button onClick={handleStart} disabled={isPlaying} style={{ marginRight: "10px" }}>
+            Start
+          </button>
+          <button onClick={handlePause} disabled={!isPlaying} style={{ marginLeft: "10px" }}>
+            Pause
+          </button>
+    
+          <label style={{ marginLeft: "10px" }}>
+            Speed:
+            <input
+              type="range"
+              min="0.5"
+              max="3"
+              step="0.1"
+              value={replaySpeed}
+              onChange={handleSpeedChange}
+              style={{ marginLeft: "10px" }}
+            />
+            {replaySpeed}x
+          </label>
+    
+          {/* iFrame for replaying session */}
+          <iframe
+            ref={iframeRef}
+            id="replay-iframe"
+            src="http://localhost:3000/src/index.html?webvitals-tracking-switch=False"
+            width={screenSize.width}
+            height={screenSize.height}
+            style={{ border: "1px solid black", marginTop: "20px" }}
+          ></iframe>
+        </div>
       </div>
     );
   }
