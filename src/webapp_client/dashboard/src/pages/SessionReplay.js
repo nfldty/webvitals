@@ -208,7 +208,7 @@ const recordedEvents = [
      const sendNextEvent = () => {
       if (currentEventIndexRef.current < recordedEvents.length) {
         console.log("sending", recordedEvents[currentEventIndexRef.current])
-        iframeRef.current.contentWindow.postMessage({ type: 'event', event: recordedEvents[currentEventIndexRef.current] }, 'http://localhost:3000');
+        iframeRef.current.contentWindow.postMessage({ type: 'event', event: recordedEvents[currentEventIndexRef.current] }, '*');
         currentEventIndexRef.current += 1;
       } else {
         clearInterval(intervalId); // Stop sending events when all events have been sent
