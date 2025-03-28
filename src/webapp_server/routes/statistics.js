@@ -8,6 +8,7 @@ const {
     getLiveUsers,
     getAverageTimePerPage,
     getAverageTotalTime,
+    getClickStatistics,
     getExtraData
 } = require('../utils/metrics');
 
@@ -32,6 +33,7 @@ router.get('/statistics', async (req, res) => {
         const avgPagesPerSession = await getAveragePagesPerSession(userId);
         const liveUsers = await getLiveUsers(userId); // Assuming this function can handle userId
         const avgTotalTime = await getAverageTotalTime(userId);
+        const clickStatistics = await getClickStatistics(userId);
         const avgTimePerPage = await getAverageTimePerPage(userId);
         const extraData = await getExtraData(userId);
   
@@ -43,6 +45,7 @@ router.get('/statistics', async (req, res) => {
             avgPagesPerSession,
             liveUsers,
             avgTotalTime,
+            clickStatistics,
             avgTimePerPage,
             extraData
         };
