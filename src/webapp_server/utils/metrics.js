@@ -237,5 +237,6 @@ module.exports = {
   getLiveUsers,
   getAverageTimePerPage,
   getAverageTotalTime,
+  getClickStatistics,
   getExtraData
 };
