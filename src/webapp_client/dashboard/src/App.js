@@ -1,11 +1,13 @@
 import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register"
 import Login from "./pages/Login"
+import SessionReplay from "./pages/SessionReplay"
 
 import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router";
+import Heatmap from "./pages/Heatmap";
 
 const router = createBrowserRouter([
   {
@@ -21,8 +23,13 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: '/*',
-    element: <Login />, // You might want to set this as the default route
+    path: '/heatmap',
+    element: <Heatmap />,
+  },
+  
+  {
+    path: '/session-replay',
+    element: <SessionReplay />, // You might want to set this as the default route
   },
 ]);
 
