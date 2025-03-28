@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // To navigate after successful registration
+import { useAuth } from '../context/AuthContext';  // Import the custom hook for AuthContext
 import api from '../utils/api';
+
 export const Register = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();  // Access login function from AuthContext
 
   // State for form fields
   const [inputs, setInputs] = useState({
@@ -31,8 +34,11 @@ export const Register = () => {
       });
 
       if (response.status === 201) {
-        // Redirect user to login page after successful registration
-        navigate('/login');
+        // Now automatically log in the user after successful registration
+        login(response.data.token);  // Store token and userId in global state
+
+        // Redirect user to the dashboard after successful login
+        navigate('/app/dashboard');
       }
     } catch (error) {
       console.error('Registration error:', error);
