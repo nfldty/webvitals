@@ -59,6 +59,19 @@ model MouseMovement {
   @@map("mouse_movement")
 }
 
+model MouseClick {
+  id        Int      @id @default(autoincrement())
+  session   Session  @relation(fields: [sessionId], references: [id])
+  sessionId String   @map("session_id")
+  xCoord    Int      @map("x_coord")
+  yCoord    Int      @map("y_coord")
+  isRage    Boolean  @map("is_rage")
+  isDead    Boolean  @map("is_dead")
+  isQuickBack Boolean @map("is_quick_back")
+  createdAt DateTime @default(now()) @map("created_at")
+  @@map("mouse_click")
+}
+
 model TimeSpent {
   id           Int      @id @default(autoincrement())
   user         User     @relation(fields: [userId], references: [id])

@@ -1,6 +1,10 @@
 import { sendData } from '../api-utility.js';
 
 function trackMouseData() {
+    
+    let lastClickX = 0;
+    let lastClickY = 0;
+
     let lastSentTime = 0;
     const sendInterval = 1000; // 100ms = 10 times per second
     let clickHistory = []; // Stores timestamps of recent clicks
@@ -8,7 +12,7 @@ function trackMouseData() {
     const RAGE_CLICK_TIMEFRAME = 1000; // Timeframe in milliseconds (1s)
     const BACK_TIME_THRESHOLD = 2000; // Time threshold to detect quick back (2s)
 
-    function sendMouseData(x, y) {
+    function sendMouseMoveData(x, y) {
         const now = Date.now();
         if (now - lastSentTime >= sendInterval) {
             sendData('mouse_move', { "x": x, "y": y, "timestamp": now });
@@ -16,23 +20,23 @@ function trackMouseData() {
         }
     }
 
-    function sendRageClickData(x, y) {
-        sendData('rage_click', { "x": x, "y": y, "timestamp": Date.now() });
-    }
-
-    function sendQuickBackData() {
-        sendData('quick_back', { "timestamp": Date.now() });
+    function sendMouseClickData(x, y, isRage, isDead, isQuickBack) {
+        sendData('mouse_click', { "x": x, "y": y, "isRage": isRage, "isDead": isDead, "isQuickBack": isQuickBack});
     }
 
     // Listen for mousemove event on the document
     document.addEventListener('mousemove', function(event) { 
         const x = event.clientX;  // X-coordinate of the mouse relative to the viewport
         const y = event.clientY;  // Y-coordinate of the mouse relative to the viewport
-        sendMouseData(x, y);
+        sendMouseMoveData(x, y);
     });
 
     // Track clicks
     document.addEventListener('click', function(event) {
+
+        lastClickX = event.clientX;
+        lastClickY = event.clientY;
+
         const timestamp = Date.now();
         clickHistory.push(timestamp);
         
@@ -41,9 +45,12 @@ function trackMouseData() {
         
         if (clickHistory.length >= RAGE_CLICK_THRESHOLD) {
             console.log('Rage click detected');
-            sendRageClickData(event.clientX, event.clientY);
+            sendMouseClickData(event.clientX, event.clientY, true, false, false);
             clickHistory = []; // Reset after detection
+        } else {
+            sendMouseClickData(event.clientX, event.clientY, false, false, false);
         }
+
     });
 
     // Detect quick backs
@@ -52,7 +59,7 @@ function trackMouseData() {
             const now = Date.now();
             if (window.lastPageLeave && now - window.lastPageLeave < BACK_TIME_THRESHOLD) {
                 console.log('Quick back detected');
-                sendQuickBackData();
+                sendMouseClickData(lastClickX || 0, lastClickY || 0, false, false, true);
             }
         }
     });

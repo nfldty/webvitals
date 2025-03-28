@@ -93,6 +93,15 @@ io.on('connection', (socket) => {
       [user_id, session_id, x, y]
     );
   });
+
+  socket.on('mouse_click', async ({ x, y, isRage, isDead, isQuickBack }) => {
+    console.log(`Mouse clicked at: ${x}, ${y}`);
+    const { user_id, session_id } = socket.handshake.auth;
+    await pool.query(
+      'INSERT INTO mouse_click (session_id, x_coord, y_coord, is_rage, is_dead, is_quick_back) VALUES ($1, $2, $3, $4, $5, $6)',
+      [session_id, x, y, isRage, isDead, isQuickBack]
+    );
+  });
   
   socket.on('page_visit', async ({ page_url }) => {
     const { user_id, session_id } = socket.handshake.auth;
@@ -130,14 +139,6 @@ io.on('connection', (socket) => {
     ); // in case no row exists create one
   });
   
-  socket.on('user_journey', async ({ page_url, time_spent }) => {
-    const { user_id, session_id } = socket.handshake.auth;
-    await pool.query(
-      'INSERT INTO user_journey (user_id, session_id, page_url, time_spent) VALUES ($1, $2, $3, $4)',
-      [user_id, session_id, page_url, time_spent]
-    );
-  });
-
   socket.on('user_journey', async ({ page_url, time_spent }) => {
     const { user_id, session_id } = socket.handshake.auth;
     await pool.query(
