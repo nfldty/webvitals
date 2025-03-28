@@ -5,8 +5,10 @@ const authMiddleware = require('./middleware/authMiddleware');
 const PORT = process.env.WEBAPP_SERVER_PORT || 3001;
 const app = express();
 const cors = require('cors');
-app.use(express.json());
 app.use(cors());
+app.options('*', cors());
+app.use(express.json());
+
 
 app.use('/auth', authRoutes);
 app.use('/', statisticsRoutes);
