@@ -98,8 +98,8 @@ io.on('connection', (socket) => {
     console.log(`Mouse clicked at: ${x}, ${y}`);
     const { user_id, session_id } = socket.handshake.auth;
     await pool.query(
-      'INSERT INTO mouse_click (session_id, x_coord, y_coord, is_rage, is_dead, is_quick_back) VALUES ($1, $2, $3, $4, $5, $6)',
-      [session_id, x, y, isRage, isDead, isQuickBack]
+      'INSERT INTO mouse_click (user_id, session_id, x_coord, y_coord, is_rage, is_dead, is_quick_back) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+      [user_id, session_id, x, y, isRage, isDead, isQuickBack]
     );
   });
   
