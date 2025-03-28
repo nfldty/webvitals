@@ -144,6 +144,45 @@ async function getAverageTotalTime(userId) {
   }
 }
 
+async function getExtraData(userId) {
+  try {
+    const totalCount = await prisma.extraData.count({
+      where: { userId },
+    });
+  
+    // Function to get grouped data and format with count & percentage
+    async function getGroupedData(field) {
+      const groupedData = await prisma.extraData.groupBy({
+        by: [field],
+        where: { userId },
+        _count: { [field]: true },
+      });
+  
+      return groupedData.map(item => ({
+        [field]: item[field],
+        count: item._count[field],
+        percentage: ((item._count[field] / totalCount) * 100).toFixed(2) + '%',
+      }));
+    }
+
+    const [browserData, osData, mobileData, referrerData] = await Promise.all([
+      getGroupedData('browserName'),
+      getGroupedData('operatingSystem'),
+      getGroupedData('isMobile'),
+      getGroupedData('referrer'),
+    ]);
+
+    return {
+      browserUsage: browserData,
+      operatingSystemUsage: osData,
+      isMobileUsage: mobileData,
+      referrerUsage: referrerData,
+    };
+  } catch (error) {
+    console.error('Error fetching extra data:', error);
+  }
+}
+
 module.exports = {
   getMostTraffic,
   getLeastTraffic,
@@ -152,4 +191,5 @@ module.exports = {
   getLiveUsers,
   getAverageTimePerPage,
   getAverageTotalTime,
+  getExtraData
 };
