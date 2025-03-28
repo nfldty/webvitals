@@ -57,8 +57,8 @@ const Heatmap = () => {
 
   // Check if URL is available, then render iframe
   return (
-    <div style={{ textAlign: 'center', padding: '20px' }}>
-      <h1>Heatmap</h1>
+    <div style={{ textAlign: 'center', padding: '20px' }} role="main" aria-label="Heatmap Section">
+      <h1 role="heading" aria-level="1">Heatmap</h1>
       {url && (
         <iframe
           ref={iframeRef}
@@ -66,6 +66,8 @@ const Heatmap = () => {
           width={screenSize.width}
           height={screenSize.height}
           style={{ border: '1px solid #ddd', marginTop: '20px' }}
+          role="document"
+          title="Heatmap Visualization"
         />
       )}
     </div>

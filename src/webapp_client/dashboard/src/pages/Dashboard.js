@@ -42,28 +42,28 @@ export const Dashboard = () => {
     <div className="dashboard-container">
       <DashboardHeader />
       <div className="dashboard-content">
-        <aside className="dashboard-sidebar">
-          <nav>
+        <aside className="dashboard-sidebar" role="complementary" aria-label="Sidebar Navigation">
+          <nav role="navigation" aria-label="Main Navigation">
             <ul>
               <li>
-                <button onClick={() => setPage("overview")}>Overview</button>
+                <button onClick={() => setPage("overview")} aria-label="Go to Overview">Overview</button>
               </li>
               <li>
-                <button onClick={() => setPage("heatmap")}>Heatmap</button>
+                <button onClick={() => setPage("heatmap")} aria-label="Go to Heatmap">Heatmap</button>
               </li>
               <li>
-                <button onClick={() => setPage("sessionReplay")}>Session Replay</button>
+                <button onClick={() => setPage("sessionReplay")} aria-label="Go to Session Replay">Session Replay</button>
               </li>
               <li>
-                <button onClick={() => setPage("settings")}>Settings</button>
+                <button onClick={() => setPage("settings")} aria-label="Go to Settings">Settings</button>
               </li>
               <li>
-                <button onClick={handleLogout} className="logout-button">Logout</button>
+                <button onClick={handleLogout} className="logout-button" aria-label="Logout">Logout</button>
               </li>
             </ul>
           </nav>
         </aside>
-        <main className="dashboard-main">
+        <main className="dashboard-main" role="main">
           {renderContent()}
         </main>
       </div>
