@@ -1,23 +1,24 @@
-import prisma from '../../prisma/prismaClient.js';
+const prisma = require('../prisma/prismaClient');
 
 // Define the individual statistics functions
-export async function getMostTraffic(userId, takeNum) {
-    try {
-        const result = await prisma.pageVisit.groupBy({
-          by: ['pageUrl'],
-          where: { userId: userId },  // userId is expected to be a string
-          _count: { pageUrl: true },
-          orderBy: { _count: { pageUrl: 'desc' } },
-          take: takeNum,
-        });
-        return result;
-      } catch (error) {
-        console.error('Error fetching most traffic pages for user:', error);
-        throw error;
-      }
+
+async function getMostTraffic(userId, takeNum) {
+  try {
+    const result = await prisma.pageVisit.groupBy({
+      by: ['pageUrl'],
+      where: { userId: userId },  // userId is expected to be a string
+      _count: { pageUrl: true },
+      orderBy: { _count: { pageUrl: 'desc' } },
+      take: takeNum,
+    });
+    return result;
+  } catch (error) {
+    console.error('Error fetching most traffic pages for user:', error);
+    throw error;
+  }
 }
 
-export async function getLeastTraffic(userId, takeNum) {
+async function getLeastTraffic(userId, takeNum) {
   try {
     const result = await prisma.pageVisit.groupBy({
       by: ['pageUrl'],
@@ -33,7 +34,7 @@ export async function getLeastTraffic(userId, takeNum) {
   }
 }
 
-export async function getTotalSession(userId) {
+async function getTotalSession(userId) {
   try {
     const result = await prisma.session.count({
       where: { userId: userId }, // Filter by userId
@@ -45,7 +46,7 @@ export async function getTotalSession(userId) {
   }
 }
 
-export async function getAveragePagesPerSession(userId) {
+async function getAveragePagesPerSession(userId) {
   try {
     // Count the total number of pages (total page visits) for a specific user
     const totalPages = await prisma.pageVisit.count({
@@ -67,30 +68,30 @@ export async function getAveragePagesPerSession(userId) {
   }
 }
 
-export async function getLiveUsers(userId) {
-    try {
-        const sessions = await prisma.session.findMany({
-            where: { userId: userId } 
-        });
-        let liveSessions = 0;
-        for (const session of sessions) {
-            const latestMovement = await prisma.mouseMovement.findFirst({
-                where: { sessionId: session.id },
-                orderBy: { createdAt: 'desc' }
-            });
-            if (latestMovement && (new Date() - latestMovement.createdAt) / 1000 < 300) {
-                liveSessions++; 
-            }
-        }
-        return liveSessions; 
-    } catch (error) {
-        console.error('Error fetching current live users for user:', error);
-        throw error;
+async function getLiveUsers(userId) {
+  try {
+    const sessions = await prisma.session.findMany({
+      where: { userId: userId }
+    });
+    let liveSessions = 0;
+    for (const session of sessions) {
+      const latestMovement = await prisma.mouseMovement.findFirst({
+        where: { sessionId: session.id },
+        orderBy: { createdAt: 'desc' }
+      });
+      if (latestMovement && (new Date() - latestMovement.createdAt) / 1000 < 300) {
+        liveSessions++; 
+      }
     }
+    return liveSessions; 
+  } catch (error) {
+    console.error('Error fetching current live users for user:', error);
+    throw error;
+  }
 }
 
 // Function to get average time spent per page for a specific user
-export async function getAverageTimePerPage(userId) {
+async function getAverageTimePerPage(userId) {
   try {
     const pageVisits = await prisma.pageVisit.findMany({
       where: {
@@ -119,7 +120,7 @@ export async function getAverageTimePerPage(userId) {
 }
 
 // Function to get the average total time spent for a specific user
-export async function getAverageTotalTime(userId) {
+async function getAverageTotalTime(userId) {
   try {
     const timeRecords = await prisma.timeSpent.findMany({
       where: {
@@ -142,3 +143,13 @@ export async function getAverageTotalTime(userId) {
     throw error;
   }
 }
+
+module.exports = {
+  getMostTraffic,
+  getLeastTraffic,
+  getTotalSession,
+  getAveragePagesPerSession,
+  getLiveUsers,
+  getAverageTimePerPage,
+  getAverageTotalTime,
+};
