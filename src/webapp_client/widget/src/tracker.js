@@ -3,6 +3,7 @@ import { trackMouseData } from "./tracker/mouse-movement.js";
 import { trackTimeSpent } from "./tracker/time-tracker.js";
 import { trackPageTransitions } from "./tracker/url-tracking.js";
 import { trackJourney } from "./tracker/user-journey.js";
+import { trackExtraData } from "./tracker/extra-data.js";
 
 const urlParams = new URLSearchParams(window.location.search);
 const trackingEnabled = urlParams.get('webvitals-tracking-switch') !== 'False';
@@ -14,6 +15,7 @@ if (trackingEnabled) {
   trackPageTransitions();
   trackJourney();
   trackImageAccessibility();
+  trackExtraData();
 } else {
   console.log('Tracking is disabled');
 }

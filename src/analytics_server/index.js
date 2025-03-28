@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const pool = require('./database');
+const userAgentParser = require('parse-user-agent');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -144,6 +145,15 @@ io.on('connection', (socket) => {
     await pool.query(
       'INSERT INTO user_journey (user_id, session_id, page_url, time_spent) VALUES ($1, $2, $3, $4)',
       [user_id, session_id, page_url, time_spent]
+    );
+  });
+
+  socket.on('extra_data_tracking', async ({ userAgent, referrer }) => {
+    const { user_id, session_id } = socket.handshake.auth;
+    let parsed = userAgentParser.parseUserAgent(userAgent);
+    await pool.query(
+      'INSERT INTO extra_data (user_id, session_id, browser_name, operating_system, is_mobile, referrer) VALUES ($1, $2, $3, $4)',
+      [user_id, session_id, parsed.browser_name, parsed.operating_system_name, parsed.is_mobile, referrer]
     );
   });
 

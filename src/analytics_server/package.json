@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx prisma generate --schema=./prisma/schema.prisma && npx prisma migrate deploy && node seed.js && node index.js"
+    "start": "npx prisma migrate dev --name=init && node seed.js && node index.js"
   },
   "keywords": [],
   "author": "",
@@ -14,9 +14,9 @@
   "dependencies": {
     "@prisma/client": "^6.4.1",
     "express": "^4.21.2",
+    "parse-user-agent": "^1.1.2",
     "pg": "^8.13.1",
     "prisma": "^6.4.1",
     "socket.io": "^4.8.1"
   }
 }
-
