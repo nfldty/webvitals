@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, useRef } from "react";
+import React, {useEffect, useRef } from 'react';
 const recordedEvents = [
     { type: 'mousemove', x: 365, y: 1, timestamp: 1743094358075 },
     { type: 'mousemove', x: 365, y: 1, timestamp: 1743094358075 },
@@ -195,102 +194,73 @@ const recordedEvents = [
     { type: 'mousemove', x: 475, y: 145, timestamp: 1743094361371 },
     { type: 'click', x: 494, y: 133, timestamp: 1743094362244 }
   ];  
-
-  const screenSize = { width: 878, height: 812 };
-
-  export default function SessionReplay() {
+const screenSize = { width: 878, height: 812 };
+const Heatmap = () => {
     const iframeRef = useRef(null);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [replaySpeed, setReplaySpeed] = useState(1);
-    const [intervalId, setIntervalId] = useState(null);
-    const currentEventIndexRef = useRef(0); // Keep track of the event index
   
-     const sendNextEvent = () => {
-      if (currentEventIndexRef.current < recordedEvents.length) {
-        console.log("sending", recordedEvents[currentEventIndexRef.current])
-        iframeRef.current.contentWindow.postMessage({ type: 'event', event: recordedEvents[currentEventIndexRef.current] }, 'http://localhost:3000');
-        currentEventIndexRef.current += 1;
-      } else {
-        clearInterval(intervalId); // Stop sending events when all events have been sent
-        setIsPlaying(false); // Stop playback
+    // Simulate heatmap data (in a real-world case, you would get this from user interactions)
+    function generateHeatmapData(recordedEvents, maxIntensity) {
+        const data = [];
+      
+        recordedEvents.forEach(event => {
+          const value = Math.floor(Math.random() * maxIntensity) + 1; // Random intensity between 1 and 1000
+          data.push({
+            x: event.x,
+            y: event.y,
+            value: value,
+          });
+        });
+      
+        return data;
+      }
+      const heatmapData = generateHeatmapData(recordedEvents, 50);
+  
+    // Function to send heatmap data to the iframe
+    const sendHeatmapDataToIframe = () => {
+      if (iframeRef.current && iframeRef.current.contentWindow) {
+        console.log('Sending heatmap data to iframe...');
+        iframeRef.current.contentWindow.postMessage(
+          { type: 'event', event: {type:"heatmapData", data:heatmapData} },
+          'http://localhost:3000'  // Target the iframe's origin
+        );
+        console.log("finished")
       }
     };
   
-    const handleStart = () => {
-      if (isPlaying) return;
-      if (currentEventIndexRef.current == recordedEvents.length) {
-        currentEventIndexRef.current = 0; // Reset index to replay from the start
-      }
-      setIsPlaying(true); // Mark replay as playing
-      sendNextEvent(); // Immediately send the first event
-  
-      // Start sending events with the specified speed
-      const interval = setInterval(sendNextEvent, 1000 / (60 * replaySpeed)); // Adjust interval based on replaySpeed
-      setIntervalId(interval);
-    };
-  
-    const handlePause = () => {
-      clearInterval(intervalId); // Clear interval to stop sending events
-      setIsPlaying(false); // Mark replay as paused
-    };
-  
-    const handleSpeedChange = (e) => {
-      const newSpeed = parseFloat(e.target.value);
-      setReplaySpeed(newSpeed);
-  
-      // If replay is playing, adjust the speed dynamically
-      if (isPlaying) {
-        clearInterval(intervalId);
-        const interval = setInterval(sendNextEvent, 1000 / (60 * newSpeed));
-        setIntervalId(interval);
-      }
-    };
-  
+    // Use useEffect to send data after iframe loads
     useEffect(() => {
-      // Automatically start replay when component mounts (if needed)
+      // Function to handle iframe onload event
+      const handleIframeLoad = () => {
+        console.log('Iframe loaded, sending heatmap data...');
+        sendHeatmapDataToIframe();
+      };
+  
       if (iframeRef.current) {
-        iframeRef.current.onload = () => {
-          console.log("Iframe loaded, sending init message...");
-          iframeRef.current.contentWindow.postMessage({ type: 'init' }, 'http://localhost:3000');
-        };
+        iframeRef.current.onload = handleIframeLoad;
       }
-    }, []);
+  
+      // Cleanup function to remove onload listener if needed
+      return () => {
+        if (iframeRef.current) {
+          iframeRef.current.onload = null;
+        }
+      };
+    }, []);  // Empty dependency array to only run once on mount
   
     return (
-      <div style={{ textAlign: "center", padding: "20px" }}>
-        <h1>Session Replay</h1>
+      <div style={{ textAlign: 'center', padding: '20px' }}>
+        <h1>Heatmap</h1>
   
-        {/* Controls */}
-        <button onClick={handleStart} disabled={isPlaying} style={{ marginRight: "10px" }}>
-          Start
-        </button>
-        <button onClick={handlePause} disabled={!isPlaying} style={{ marginLeft: "10px" }}>
-          Pause
-        </button>
-  
-        <label style={{ marginLeft: "10px" }}>
-          Speed:
-          <input
-            type="range"
-            min="0.5"
-            max="3"
-            step="0.1"
-            value={replaySpeed}
-            onChange={handleSpeedChange}
-            style={{ marginLeft: "10px" }}
-          />
-          {replaySpeed}x
-        </label>
-  
-        {/* iFrame for replaying session */}
+        {/* iFrame where heatmap will be displayed */}
         <iframe
           ref={iframeRef}
-          id="replay-iframe"
-          src="http://localhost:3000/src/index.html?webvitals-tracking-switch=False"
+          src="http://localhost:3000/src/index.html?webvitals-tracking-switch=False" 
           width={screenSize.width}
           height={screenSize.height}
-          style={{ border: "1px solid black", marginTop: "20px" }}
-        ></iframe>
+          style={{ border: '1px solid #ddd', marginTop: '20px' }}
+        />
       </div>
     );
-  }
+  };
+  
+  export default Heatmap;

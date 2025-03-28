@@ -3,7 +3,7 @@
 const esbuild = require('esbuild');
 const dotenv = require('dotenv');
 
-const envResult = dotenv.config();
+const envResult = dotenv.config({ path: '../../.env' });
 if (envResult.error) {
   console.error('Error loading .env file:', envResult.error);
   process.exit(1);
@@ -16,7 +16,7 @@ const defineEnv = Object.keys(envResult.parsed).reduce((acc, key) => {
 }, {});
 
 esbuild.build({
-  entryPoints: ['src/tracker.js'],
+  entryPoints: ['tracker.js'],
   bundle: true,
   minify: true,
   outfile: 'widget.js',

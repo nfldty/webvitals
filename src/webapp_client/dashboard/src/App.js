@@ -7,6 +7,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router";
+import Heatmap from "./pages/Heatmap";
 
 const router = createBrowserRouter([
   {
@@ -22,7 +23,12 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: '/*',
+    path: '/heatmap',
+    element: <Heatmap />,
+  },
+  
+  {
+    path: '/session-replay',
     element: <SessionReplay />, // You might want to set this as the default route
   },
 ]);

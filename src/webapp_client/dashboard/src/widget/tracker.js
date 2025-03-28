@@ -1,3 +1,26 @@
+import { trackImageAccessibility } from "./tracker/accessibility-check.js";
+import { trackMouseData } from "./tracker/mouse-movement.js";
+import { trackTimeSpent } from "./tracker/time-tracker.js";
+import { trackPageTransitions } from "./tracker/url-tracking.js";
+import { trackJourney } from "./tracker/user-journey.js";
+
+
+const urlParams = new URLSearchParams(window.location.search);
+const trackingEnabled = urlParams.get('webvitals-tracking-switch') !== 'False';
+
+if (trackingEnabled) {
+  // TRACKER STUFFS
+  trackMouseData();
+  trackTimeSpent();
+  trackPageTransitions();
+  trackJourney();
+  trackImageAccessibility();
+} else {
+  console.log('Tracking is disabled');
+}
+
+
+//SESSION REPLAY 
 const canvas = document.createElement("canvas");
 canvas.id = "lineCanvas";
 canvas.style.position = "absolute";
@@ -144,3 +167,6 @@ window.addEventListener("message", function(event) {
         hideReplayElements();
     }
 });
+
+
+
