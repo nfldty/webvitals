@@ -6,22 +6,23 @@ function trackMouseData() {
     let lastClickY = 0;
 
     let lastSentTime = 0;
-    const sendInterval = 1000; // 100ms = 10 times per second
+    const sendInterval = 1000/30; // 30 fps
     let clickHistory = []; // Stores timestamps of recent clicks
     const RAGE_CLICK_THRESHOLD = 3; // Number of clicks to be considered rage clicks
-    const RAGE_CLICK_TIMEFRAME = 1000; // Timeframe in milliseconds (1s)
-    const BACK_TIME_THRESHOLD = 2000; // Time threshold to detect quick back (2s)
+    const RAGE_CLICK_TIMEFRAME = 1000; // Timeframe in milliseconds (1 second)
+    const BACK_TIME_THRESHOLD = 2000; // Time threshold to detect quick back (2 seconds)
 
     function sendMouseMoveData(x, y) {
         const now = Date.now();
-        if (now - lastSentTime >= sendInterval) {
-            sendData('mouse_move', { "x": x, "y": y, "timestamp": now });
-            lastSentTime = now; // Update last sent time
-        }
+        sendData('mouse_move', { "x": x, "y": y, "timestamp": now });
+        lastSentTime = now; // Update last sent time
+        // if (now - lastSentTime >= sendInterval) {
+            
+        // }
     }
 
     function sendMouseClickData(x, y, isRage, isDead, isQuickBack) {
-        sendData('mouse_click', { "x": x, "y": y, "isRage": isRage, "isDead": isDead, "isQuickBack": isQuickBack});
+        sendData('mouse_click', { "x": x, "y": y, "isRage": isRage, "isDead": isDead, "isQuickBack": isQuickBack });
     }
 
     // Listen for mousemove event on the document
@@ -33,7 +34,6 @@ function trackMouseData() {
 
     // Track clicks
     document.addEventListener('click', function(event) {
-
         lastClickX = event.clientX;
         lastClickY = event.clientY;
 
@@ -43,12 +43,16 @@ function trackMouseData() {
         // Remove old clicks outside the timeframe
         clickHistory = clickHistory.filter(time => timestamp - time <= RAGE_CLICK_TIMEFRAME);
         
+        // Check if the click happened on a non-interactive area (e.g., dead click)
+        const isInteractiveElement = event.target.closest('button, a, input, textarea, select, [role="button"], [role="link"]');
+        const isDeadClick = !isInteractiveElement;
+
         if (clickHistory.length >= RAGE_CLICK_THRESHOLD) {
             console.log('Rage click detected');
-            sendMouseClickData(event.clientX, event.clientY, true, false, false);
+            sendMouseClickData(event.clientX, event.clientY, true, isDeadClick, false);
             clickHistory = []; // Reset after detection
         } else {
-            sendMouseClickData(event.clientX, event.clientY, false, false, false);
+            sendMouseClickData(event.clientX, event.clientY, false, isDeadClick, false);
         }
 
     });
