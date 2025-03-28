@@ -287,7 +287,7 @@ const recordedEvents = [
           <iframe
             ref={iframeRef}
             id="replay-iframe"
-            src="http://localhost:3000/src/index.html?webvitals-tracking-switch=False"
+            src="/app/test.html?webvitals-tracking-switch=False"
             width={screenSize.width}
             height={screenSize.height}
             style={{ border: "1px solid black", marginTop: "20px" }}

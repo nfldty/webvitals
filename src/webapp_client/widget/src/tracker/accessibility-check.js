@@ -36,7 +36,7 @@ function trackImageAccessibility() {
 async function sendAccessibilityReport(issues) {
     await sendData("accessibility_report", { issues });
     // Alternatively, you can display the issues on the console for developers to fix
-    accessibilityIssues.forEach(issue => {
+    issues.forEach(issue => {
         console.log(issue);
     });
 }
