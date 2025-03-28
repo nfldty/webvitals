@@ -11,37 +11,40 @@ import Heatmap from "./pages/Heatmap";
 
 const router = createBrowserRouter([
   {
-    path: '/dashboard',
+    path: 'app/dashboard',
     element: <Dashboard />,
   },
   {
-    path: '/register',
+    path: 'app/register',
     element: <Register />,
   },
   {
-    path: '/login',
+    path: 'app/login',
     element: <Login />,
   },
   {
-    path: '/heatmap',
+    path: 'app/heatmap',
     element: <Heatmap />,
   },
-  
   {
-    path: '/session-replay',
-    element: <SessionReplay />, // You might want to set this as the default route
+    path: 'app/session-replay',
+    element: <SessionReplay />,
+  },
+  {// You might want to set this as the default route
+    path: '/*',
+    element: <Login />, // default route
   },
 ]);
 
 function App() {
   return (
-    <div role="application">
-      <div className="app" role="main">
-        <div className="container" role="region" aria-label="content">
-          <RouterProvider router={router} />
+      <div role="application">
+        <div className="app" role="main">
+          <div className="container" role="region" aria-label="content">
+            <RouterProvider router={router} />
+          </div>
         </div>
       </div>
-    </div>
   );
 }
 

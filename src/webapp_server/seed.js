@@ -22,7 +22,7 @@ async function main() {
     },
   });
 
-  console.log("Admin user upserted:", adminUser);
+  console.log("Admin user upserted:", adminUser2);
 }
 
 main()

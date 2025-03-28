@@ -1,5 +1,39 @@
 services:
-
+  analytics-server:
+    build:
+      context: .
+      dockerfile: analytics_server/Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - DB_HOST=postgres
+      - PORT=3000
+      - DB_USER=webvitals
+      - DB_PASSWORD=password
+      - DB_PORT=5432
+      - DB_NAME=db
+      - DB_URL=postgresql://webvitals:password@postgres:5432/db
+    depends_on:
+      postgres:
+        condition: service_healthy
+  webapp-server:
+    build:
+      context: .
+      dockerfile: webapp_server/Dockerfile
+    ports:
+      - '3001:3001'
+    environment:
+      - PORT=3001
+      - ANALYTICS_SERVER_URL=http://analytics-server:3000
+      - DB_HOST=postgres
+      - DB_USER=webvitals
+      - DB_PASSWORD=password
+      - DB_PORT=5432
+      - DB_NAME=db
+      - DB_URL=postgresql://webvitals:password@postgres:5432/db
+    depends_on:
+      postgres:
+        condition: service_healthy
   postgres:
     image: postgres:15
     environment:
@@ -14,4 +48,10 @@ services:
       timeout: 5s
       retries: 5
 
- 
+  proxy:
+    build:
+      context: ./webapp_client
+    ports:
+      - "80:80"
+    depends_on:
+      - analytics-server

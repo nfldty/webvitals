@@ -28,7 +28,7 @@ export const Login = () => {
 
       if (response.status === 200) {
         localStorage.setItem('authToken', response.data.token);
-        navigate('/dashboard');
+        navigate('/app/dashboard');
       }
     } catch (error) {
       console.log('Login error:', error);
@@ -64,7 +64,7 @@ export const Login = () => {
           </button>
           <span className="text-sm text-center">
             Don&apos;t have an account?{' '}
-            <Link to="/register" className="text-blue-600 hover:underline">
+            <Link to="/app/register" className="text-blue-600 hover:underline">
               Register
             </Link>
           </span>

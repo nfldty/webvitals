@@ -2,20 +2,21 @@
 FROM node:23-alpine AS react-builder
 WORKDIR /app
 
-COPY newap/package*.json ./
+# Copy package files and install dependencies
+COPY dashboard/package*.json ./
 RUN npm install
-COPY newap .
 
+# Copy the rest of the source code and build the app
+COPY dashboard .
 RUN npm run build
+
 
 # Stage 2
 FROM node:23-alpine AS widget-builder
 WORKDIR /widget
-
 COPY widget/package*.json ./
 RUN npm install
 COPY widget .
-
 RUN npm run build
 
 # Stage 3
