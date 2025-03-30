@@ -2,51 +2,72 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import FilterSelector from "../components/FilterSelector";
 import '../style.css';
+import SessionReplay from './SessionReplay';
+import Settings from './Settings';
+import Overview from './Overview';
+import Heatmap from './Heatmap';
+import DashboardHeader from '../components/DashboardHeader';
+import { useAuth } from '../context/AuthContext';
+import ProtectedRoute from '../components/ProtectedRoute';
+
 
 export const Dashboard = () => {
-  const [filters, setFilters] = useState({});
+  const [page, setPage] = useState("overview");
   // Convert the snippet into a string so it can be displayed in an input.
-  const snippet = `<script type="module" data-webvitals-widget src="http://localhost/widget.js" data-user-id="1" defer></script>`;
+  const snippet = `<script type="module" data-webvitals-widget src="http://localhost/widget/widget.js" data-user-id="1" defer></script>`;
   const navigate = useNavigate();
+  const { logout } = useAuth();
+
   const handleLogout = () => {
     // Implement logout logic here (e.g., clear tokens, redirect, etc.)
     console.log("User logged out");
-    localStorage.setItem('authToken', '');
+    logout();
     navigate('/app/login');
+  };
 
-    // For example: window.location.href = '/login';
+  // Render page content based on the selected nav item
+  const renderContent = () => {
+    switch (page) {
+      case "overview":
+        return <ProtectedRoute element={<Overview />} />;
+      case "heatmap":
+        return <ProtectedRoute element={<Heatmap/>} />;
+      case "sessionReplay":
+        return <ProtectedRoute element={<SessionReplay/>} />;
+      case "settings":
+        return <ProtectedRoute element={<Settings/>} />;
+      default:
+        return <ProtectedRoute element={<Overview/>} />;
+    }
   };
 
   return (
     <div className="dashboard-container">
-      <header className="dashboard-header">
-        <h1>Webvitals Dashboard</h1>
-      </header>
+      <DashboardHeader />
       <div className="dashboard-content">
-        <aside className="dashboard-sidebar">
-          <nav>
+        <aside className="dashboard-sidebar" role="complementary" aria-label="Sidebar Navigation">
+          <nav role="navigation" aria-label="Main Navigation">
             <ul>
-              <li>Overview</li>
-              <li>Sessions</li>
-              <li>Insights</li>
-              <li>Settings</li>
               <li>
-                <button onClick={handleLogout} className="logout-button">
-                  Logout
-                </button>
+                <button onClick={() => setPage("overview")} aria-label="Go to Overview">Overview</button>
+              </li>
+              <li>
+                <button onClick={() => setPage("heatmap")} aria-label="Go to Heatmap">Heatmap</button>
+              </li>
+              <li>
+                <button onClick={() => setPage("sessionReplay")} aria-label="Go to Session Replay">Session Replay</button>
+              </li>
+              <li>
+                <button onClick={() => setPage("settings")} aria-label="Go to Settings">Settings</button>
+              </li>
+              <li>
+                <button onClick={handleLogout} className="logout-button" aria-label="Logout">Logout</button>
               </li>
             </ul>
           </nav>
         </aside>
-        <main className="dashboard-main">
-          <div className="widget-card">
-            <p>Below is your webvitals widget; please insert into your web page.</p>
-            <input type="text" readOnly value={snippet} />
-          </div>
-          <div className="filters-section">
-            <FilterSelector onApplyFilters={setFilters} />
-          </div>
-          <h1 className="dashboard-title">THIS IS THE DASHBOARD</h1>
+        <main className="dashboard-main" role="main">
+          {renderContent()}
         </main>
       </div>
     </div>

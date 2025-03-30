@@ -1,18 +1,18 @@
-import Dashboard from "./pages/Dashboard";
-import Register from "./pages/Register"
-import Login from "./pages/Login"
-import SessionReplay from "./pages/SessionReplay"
-
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router";
-import Heatmap from "./pages/Heatmap";
+import React from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext'; // Import AuthProvider
+import Dashboard from './pages/Dashboard';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import SessionReplay from './pages/SessionReplay';
+import Heatmap from './pages/Heatmap';
+import ProtectedRoute from './components/ProtectedRoute';  // Import the ProtectedRoute
 
 const router = createBrowserRouter([
   {
     path: 'app/dashboard',
-    element: <Dashboard />,
+    element: <ProtectedRoute element={<Dashboard />} />,  // Protect this route
+    //element: <Dashboard />,
   },
   {
     path: 'app/register',
@@ -24,20 +24,22 @@ const router = createBrowserRouter([
   },
   {
     path: 'app/heatmap',
-    element: <Heatmap />,
+    element: <ProtectedRoute element={<Heatmap />} />,  // Protect this route
   },
   {
     path: 'app/session-replay',
-    element: <SessionReplay />,
+    element: <ProtectedRoute element={<SessionReplay />} />,  // Protect this route
+    
   },
-  {// You might want to set this as the default route
+  {
     path: '/*',
-    element: <Login />, // default route
+    element: <Login />,  // Default route
   },
 ]);
 
 function App() {
   return (
+    <AuthProvider>
       <div role="application">
         <div className="app" role="main">
           <div className="container" role="region" aria-label="content">
@@ -45,6 +47,7 @@ function App() {
           </div>
         </div>
       </div>
+    </AuthProvider>
   );
 }
 

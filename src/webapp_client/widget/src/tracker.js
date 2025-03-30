@@ -13,7 +13,7 @@ if (trackingEnabled) {
   trackMouseData();
   trackTimeSpent();
   trackPageTransitions();
-  trackJourney();
+//   trackJourney();
   trackImageAccessibility();
   trackExtraData();
 } else {
@@ -95,7 +95,7 @@ function loadHeatmapScript(callback) {
 
     // Listen for messages from the parent window (for iframe interactions)
     window.addEventListener('message', function(event) {
-        if (event.origin !== 'http://localhost:5000') return;
+        // if (event.origin !== 'http://localhost') return;
         const data = event.data;
         if (data.type === 'event') {
             processEvent(data.event);

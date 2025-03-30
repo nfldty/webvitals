@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; 
-import { Link } from 'react-router-dom';
-import api from '../utils/api'
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import api from '../utils/api';
+import DashboardHeader from '../components/DashboardHeader';
+import '../style.css';
 
 export const Login = () => {
   const navigate = useNavigate();
-
+  const { login } = useAuth();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -20,57 +22,59 @@ export const Login = () => {
     }
 
     try {
-
-      const response = await api.post('/auth/login', {
-        username,
-        password,
-      });
-
+      const response = await api.post('/auth/login', { username, password });
       if (response.status === 200) {
-        localStorage.setItem('authToken', response.data.token);
+        const token = response.data.token;
+        login(token);
         navigate('/app/dashboard');
       }
     } catch (error) {
-      console.log('Login error:', error);
+      console.error('Login error:', error);
       setErrorMessage('Failed to log in. Please check your credentials and try again.');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
-        {errorMessage && <p className="text-red-500 text-center mb-4">{errorMessage}</p>}
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            type="submit"
-            className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-          >
-            Login
-          </button>
-          <span className="text-sm text-center">
-            Don&apos;t have an account?{' '}
-            <Link to="/app/register" className="text-blue-600 hover:underline">
-              Register
-            </Link>
-          </span>
-        </form>
+    <>
+      <DashboardHeader />
+      <div className="form-container">
+        <div className="form-wrapper">
+          <h1 className="page-heading">Welcome Back</h1>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
+          <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+            <div className="input-group">
+              <label htmlFor="username" className="input-label">Username</label>
+              <input
+                id="username"
+                type="text"
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="input-field"
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="password" className="input-label">Password</label>
+              <input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-field"
+              />
+            </div>
+            <button type="submit" className="btn">Login</button>
+            <p className="text-center text-sm text-gray-600">
+              Don&apos;t have an account?{' '}
+              <Link to="/app/register" className="link-text">
+                Register
+              </Link>
+            </p>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -140,19 +140,19 @@ io.on('connection', (socket) => {
     ); // in case no row exists create one
   });
   
-  socket.on('user_journey', async ({ page_url, time_spent }) => {
-    const { user_id, session_id } = socket.handshake.auth;
-    await pool.query(
-      'INSERT INTO user_journey (user_id, session_id, page_url, time_spent) VALUES ($1, $2, $3, $4)',
-      [user_id, session_id, page_url, time_spent]
-    );
-  });
+  // socket.on('user_journey', async ({ page_url, time_spent }) => {
+  //   const { user_id, session_id } = socket.handshake.auth;
+  //   await pool.query(
+  //     'INSERT INTO user_journey (user_id, session_id, page_url, time_spent) VALUES ($1, $2, $3, $4)',
+  //     [user_id, session_id, page_url, time_spent]
+  //   );
+  // });
 
   socket.on('extra_data_tracking', async ({ userAgent, referrer }) => {
     const { user_id, session_id } = socket.handshake.auth;
     let parsed = userAgentParser.parseUserAgent(userAgent);
     await pool.query(
-      'INSERT INTO extra_data (user_id, session_id, browser_name, operating_system, is_mobile, referrer) VALUES ($1, $2, $3, $4)',
+      'INSERT INTO extra_data (user_id, session_id, browser_name, operating_system, is_mobile, referrer) VALUES ($1, $2, $3, $4, $5, $6)',
       [user_id, session_id, parsed.browser_name, parsed.operating_system_name, parsed.is_mobile, referrer]
     );
   });
