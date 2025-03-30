@@ -1,9 +1,10 @@
 // src/pages/SessionReplay.jsx
 import React, { useState, useEffect, useRef } from 'react';
+import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 
 export default function SessionReplay() {
-  const [userId, setUserId] = useState('');
+  const { userId } = useAuth();
   const [sessions, setSessions] = useState([]);
   const [selectedSession, setSelectedSession] = useState('');
   const [events, setEvents] = useState([]);
@@ -14,9 +15,15 @@ export default function SessionReplay() {
   const intervalRef = useRef(null);
   const eventIndexRef = useRef(0);
 
-  // Fetch sessions for the given user
+  // Automatically fetch sessions when userId is available
+  useEffect(() => {
+    if (userId) {
+      fetchSessions();
+    }
+  }, [userId]);
+
+  // Fetch sessions for the current user
   const fetchSessions = async () => {
-    if (!userId) return;
     try {
       const res = await api.get('/sessions', { params: { userId } });
       setSessions(res.data);
@@ -25,7 +32,7 @@ export default function SessionReplay() {
     }
   };
 
-  // Fetch events for a given session
+  // Fetch events for the selected session
   const fetchSessionEvents = async () => {
     if (!selectedSession) return;
     try {
@@ -37,6 +44,7 @@ export default function SessionReplay() {
     }
   };
 
+  // Send the next event to the iframe
   const sendNextEvent = () => {
     if (eventIndexRef.current < events.length) {
       const event = events[eventIndexRef.current];
@@ -50,6 +58,7 @@ export default function SessionReplay() {
     }
   };
 
+  // Start replaying events
   const startReplay = () => {
     if (isPlaying || events.length === 0) return;
     setIsPlaying(true);
@@ -59,6 +68,7 @@ export default function SessionReplay() {
     }, 1000 / (60 * replaySpeed));
   };
 
+  // Pause replay
   const pauseReplay = () => {
     clearInterval(intervalRef.current);
     setIsPlaying(false);
@@ -68,23 +78,12 @@ export default function SessionReplay() {
     <div style={{ textAlign: 'center', padding: '20px' }}>
       <h1>Session Replay</h1>
       <div style={{ marginBottom: '20px' }}>
-        <label>
-          User ID: 
-          <input
-            type="text"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-            style={{ marginLeft: '10px' }}
-          />
-        </label>
-        <button onClick={fetchSessions} style={{ marginLeft: '10px' }}>
-          Fetch Sessions
-        </button>
+        <p>User ID: {userId}</p>
       </div>
       {sessions.length > 0 && (
         <div style={{ marginBottom: '20px' }}>
           <label>
-            Select Session: 
+            Select Session:{' '}
             <select
               value={selectedSession}
               onChange={(e) => setSelectedSession(e.target.value)}
@@ -104,10 +103,18 @@ export default function SessionReplay() {
         </div>
       )}
       <div style={{ marginBottom: '20px' }}>
-        <button onClick={startReplay} disabled={isPlaying || events.length === 0} style={{ marginRight: '10px' }}>
+        <button
+          onClick={startReplay}
+          disabled={isPlaying || events.length === 0}
+          style={{ marginRight: '10px' }}
+        >
           Start
         </button>
-        <button onClick={pauseReplay} disabled={!isPlaying} style={{ marginLeft: '10px' }}>
+        <button
+          onClick={pauseReplay}
+          disabled={!isPlaying}
+          style={{ marginLeft: '10px' }}
+        >
           Pause
         </button>
         <label style={{ marginLeft: '10px' }}>

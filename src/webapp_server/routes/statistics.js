@@ -173,8 +173,8 @@ router.get('/sessions', async (req, res) => {
       }
       // Use the same field names as in your statistics route
       const sessions = await prisma.session.findMany({
-        where: { userId: userId },
-        orderBy: { start_time: 'desc' }
+        where: { userId },
+        orderBy: { createdAt: 'desc' }
       });
       res.json(sessions);
     } catch (error) {
@@ -197,11 +197,11 @@ router.get('/sessions', async (req, res) => {
         });
       }
       // Fetch mouse movement events using the correct field name
-      const mouseMovements = await prisma.mouse_movement.findMany({
+      const mouseMovements = await prisma.mouseMovement.findMany({
         where: { sessionId: sessionId }
       });
       // Fetch mouse click events using the correct field name
-      const mouseClicks = await prisma.mouse_click.findMany({
+      const mouseClicks = await prisma.mouseClick.findMany({
         where: { sessionId: sessionId }
       });
       // Map events to a common format
