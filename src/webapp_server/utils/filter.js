@@ -6,9 +6,22 @@ const operatorMap = {
     ">=": "gte"
   };
   
-  function applyFilters(prismaQuery, queryParams) {
+  function applyFilters(prismaQuery, queryParams, session) {
+    if (!queryParams) return prismaQuery;
+
     if (!prismaQuery.where) {
       prismaQuery.where = {};
+    }
+
+    let target;
+    if (session) {
+      target = prismaQuery.where;
+    }
+    else {
+      if (!prismaQuery.where.session) {
+        prismaQuery.where.session = {};
+      }
+      target = prismaQuery.where.session
     }
   
     // Build date filter object only if valid values exist
@@ -20,12 +33,12 @@ const operatorMap = {
       dateFilter.lte = new Date(queryParams.end_time);
     }
     if (Object.keys(dateFilter).length > 0) {
-      prismaQuery.where.startTime = dateFilter;
+      target.startTime = dateFilter;
     }
   
     // Only add page_url filter if provided
     if (queryParams.page_url && queryParams.page_url.trim() !== "") {
-      prismaQuery.where.pageVisits = {
+      target.pageVisits = {
         some: {
           pageUrl: { contains: queryParams.page_url, mode: "insensitive" },
         },
@@ -39,7 +52,7 @@ const operatorMap = {
         const [, operator, value] = match;
         const prismaOperator = operatorMap[operator];
         if (prismaOperator) {
-          prismaQuery.where.timeSpent = {
+          target.timeSpent = {
             some: {
               elapsedTime: { [prismaOperator]: parseInt(value, 10) },
             },

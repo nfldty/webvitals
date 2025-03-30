@@ -79,10 +79,9 @@ const Overview = () => {
   // Define fetchStats in the component scope so it can be used elsewhere
   const fetchStats = async () => {
     try {
-      const endpoint = Object.keys(filters).length > 0 
-        ? '/filteredStatistics'
-        : '/statistics';
-      const params = { ...filters, userId: effectiveUserId };
+      const endpoint = '/statistics';
+      const usedFilters = Object.fromEntries(Object.entries(filters).filter(([key, value]) => value))
+      const params = { ...usedFilters, userId: effectiveUserId };
       const response = await api.get(endpoint, { params });
       setStats(response.data);
     } catch (error) {
