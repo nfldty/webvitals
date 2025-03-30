@@ -207,15 +207,15 @@ router.get('/sessions', async (req, res) => {
       // Map events to a common format
       const movementEvents = mouseMovements.map(m => ({
         type: 'mousemove',
-        x: m.x_coord,
-        y: m.y_coord,
-        timestamp: new Date(m.created_at).getTime()
+        x: m.xCoord,
+        y: m.yCoord,
+        timestamp: new Date(m.createdAt).getTime()
       }));
       const clickEvents = mouseClicks.map(c => ({
         type: 'click',
-        x: c.x_coord,
-        y: c.y_coord,
-        timestamp: new Date(c.created_at).getTime()
+        x: c.xCoord,
+        y: c.yCoord,
+        timestamp: new Date(c.createdAt).getTime()
       }));
       // Combine and sort events by timestamp
       const events = [...movementEvents, ...clickEvents].sort((a, b) => a.timestamp - b.timestamp);

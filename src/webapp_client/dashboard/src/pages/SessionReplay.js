@@ -38,6 +38,8 @@ export default function SessionReplay() {
     try {
       const res = await api.get(`/sessions/${selectedSession}/events`);
       setEvents(res.data);
+      console.log('Fetched session events:', res.data);
+      console.log('first element: ', res.data[0]);
       eventIndexRef.current = 0;
     } catch (error) {
       console.error('Error fetching session events:', error);
