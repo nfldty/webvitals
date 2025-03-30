@@ -62,7 +62,7 @@ async function getAveragePagesPerSession(userId, filter) {
     // Calculate the average pages per session
     const averagePagesPerSession = totalSessions === 0 ? 0 : totalPages / totalSessions;
 
-    return averagePagesPerSession;
+    return averagePagesPerSession < 1 ? 1 : averagePagesPerSession.toFixed(); // Ensure at least 1 page per session
   } catch (error) {
     console.error('Error fetching average pages per session for user:', error);
     throw error;
@@ -113,7 +113,7 @@ async function getAverageTimePerPage(userId, filter) {
     });
 
     const averageTime = totalVisits === 0 ? 0 : totalTime / totalVisits; // Return average time
-    return averageTime / 1000; // Return time in seconds
+    return Math.floor(averageTime / 1000);; // Return time in seconds
   } catch (error) {
     console.error('Error fetching average time per page for user:', error);
     throw error;
@@ -138,7 +138,7 @@ async function getAverageTotalTime(userId, filter) {
     });
 
     const averageTime = totalRecords === 0 ? 0 : totalTime / totalRecords;
-    return averageTime; // This will return average time in the units defined in your model (e.g., seconds)
+    return Math.floor(averageTime / 1000); // This will return average time in the units defined in your model (e.g., seconds)
   } catch (error) {
     console.error('Error fetching average total time for user:', error);
     throw error;
