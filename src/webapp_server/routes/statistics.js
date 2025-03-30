@@ -162,4 +162,72 @@ router.get('/filteredStatistics', async (req, res) => {
     }
 });
 
+router.get('/sessions', async (req, res) => {
+    try {
+      const userId = req.query.userId; // userId is expected to be a string
+      if (!userId) {
+        return res.status(400).json({
+          error: 'Invalid userId',
+          message: 'Please provide a valid userId in the query string.'
+        });
+      }
+      // Use the same field names as in your statistics route
+      const sessions = await prisma.session.findMany({
+        where: { userId: userId },
+        orderBy: { start_time: 'desc' }
+      });
+      res.json(sessions);
+    } catch (error) {
+      console.error('Error fetching sessions:', error);
+      res.status(500).json({
+        error: 'Failed to fetch sessions',
+        message: error.message,
+      });
+    }
+  });
+  
+  
+  router.get('/sessions/:sessionId/events', async (req, res) => {
+    try {
+      const sessionId = req.params.sessionId;
+      if (!sessionId) {
+        return res.status(400).json({
+          error: 'Invalid sessionId',
+          message: 'Please provide a valid sessionId.'
+        });
+      }
+      // Fetch mouse movement events using the correct field name
+      const mouseMovements = await prisma.mouse_movement.findMany({
+        where: { sessionId: sessionId }
+      });
+      // Fetch mouse click events using the correct field name
+      const mouseClicks = await prisma.mouse_click.findMany({
+        where: { sessionId: sessionId }
+      });
+      // Map events to a common format
+      const movementEvents = mouseMovements.map(m => ({
+        type: 'mousemove',
+        x: m.x_coord,
+        y: m.y_coord,
+        timestamp: new Date(m.created_at).getTime()
+      }));
+      const clickEvents = mouseClicks.map(c => ({
+        type: 'click',
+        x: c.x_coord,
+        y: c.y_coord,
+        timestamp: new Date(c.created_at).getTime()
+      }));
+      // Combine and sort events by timestamp
+      const events = [...movementEvents, ...clickEvents].sort((a, b) => a.timestamp - b.timestamp);
+      res.json(events);
+    } catch (error) {
+      console.error('Error fetching session events:', error);
+      res.status(500).json({
+        error: 'Failed to fetch session events',
+        message: error.message,
+      });
+    }
+  });
+  
+
 module.exports = router;
