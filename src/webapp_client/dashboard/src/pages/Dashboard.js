@@ -9,9 +9,10 @@ import Heatmap from './Heatmap';
 import DashboardHeader from '../components/DashboardHeader';
 import { useAuth } from '../context/AuthContext';
 import ProtectedRoute from '../components/ProtectedRoute';
-
+import { useTheme } from '../context/ThemeContext';
 
 export const Dashboard = () => {
+  const { theme, setTheme } = useTheme();
   const [page, setPage] = useState("overview");
   // Convert the snippet into a string so it can be displayed in an input.
   const snippet = `<script type="module" data-webvitals-widget src="http://localhost/widget/widget.js" data-user-id="1" defer></script>`;
@@ -42,10 +43,10 @@ export const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-container">
+    <div className={`dashboard-container ${theme}`}>
       <DashboardHeader />
-      <div className="dashboard-content">
-        <aside className="dashboard-sidebar" role="complementary" aria-label="Sidebar Navigation">
+      <div className={`dashboard-content ${theme}`}>
+        <aside className={`dashboard-sidebar ${theme}`} role="complementary" aria-label="Sidebar Navigation">
           <nav role="navigation" aria-label="Main Navigation">
             <ul>
               <li>
@@ -65,6 +66,15 @@ export const Dashboard = () => {
               </li>
             </ul>
           </nav>
+          <select
+            value={theme}
+            onChange={(e) => setTheme(e.target.value)}
+            aria-label="Select Theme"
+          >
+            <option value="light">Light Mode</option>
+            <option value="dark">Dark Mode</option>
+            <option value="deuteranopia">Deuteranopia</option>
+          </select>
         </aside>
         <main className="dashboard-main" role="main">
           {renderContent()}

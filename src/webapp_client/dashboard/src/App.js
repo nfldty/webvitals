@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import SessionReplay from './pages/SessionReplay';
 import Heatmap from './pages/Heatmap';
 import ProtectedRoute from './components/ProtectedRoute';  // Import the ProtectedRoute
+import { ThemeProvider } from './context/ThemeContext';
 
 const router = createBrowserRouter([
   {
@@ -40,13 +41,15 @@ const router = createBrowserRouter([
 function App() {
   return (
     <AuthProvider>
-      <div role="application">
-        <div className="app" role="main">
-          <div className="container" role="region" aria-label="content">
-            <RouterProvider router={router} />
+      <ThemeProvider>
+        <div role="application">
+          <div className="app" role="main">
+            <div className="container" role="region" aria-label="content">
+              <RouterProvider router={router} />
+            </div>
           </div>
         </div>
-      </div>
+      </ThemeProvider>
     </AuthProvider>
   );
 }
