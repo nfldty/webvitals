@@ -1,52 +1,57 @@
 import React from 'react';
+// Removed Outlet import as we're not using the nested layout approach now
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext'; // Import AuthProvider
+import { AuthProvider } from './context/AuthContext'; // Keep existing
+import { ThemeProvider } from './context/ThemeContext'; // Keep existing & use globally
+// Import Page components
 import Dashboard from './pages/Dashboard';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import SessionReplay from './pages/SessionReplay';
 import Heatmap from './pages/Heatmap';
-import ProtectedRoute from './components/ProtectedRoute';  // Import the ProtectedRoute
+// Import ProtectedRoute
+import ProtectedRoute from './components/ProtectedRoute';  // Keep existing
 
+// --- Define Routes (No per-route ThemeProvider needed anymore) ---
 const router = createBrowserRouter([
   {
-    path: 'app/dashboard',
-    element: <ProtectedRoute element={<Dashboard />} />,  // Protect this route
-    //element: <Dashboard />,
+    // Protected Dashboard Route
+    path: '/app/dashboard',
+    element: <ProtectedRoute element={<Dashboard />} />, // Element is just the page now
   },
   {
-    path: 'app/register',
-    element: <Register />,
+    // Protected Session Replay
+    path: '/app/session-replay',
+    element: <ProtectedRoute element={<SessionReplay />} />, // Element is just the page now
   },
   {
-    path: 'app/login',
-    element: <Login />,
+    // Protected Heatmap
+    path: '/app/heatmap',
+    element: <ProtectedRoute element={<Heatmap />} />, // Element is just the page now
   },
   {
-    path: 'app/heatmap',
-    element: <ProtectedRoute element={<Heatmap />} />,  // Protect this route
+    // --- Authentication routes ---
+    path: '/app/register',
+    element: <Register />, // Render Register page directly
   },
   {
-    path: 'app/session-replay',
-    element: <ProtectedRoute element={<SessionReplay />} />,  // Protect this route
-    
+    path: '/app/login',
+    element: <Login />,   // Render Login page directly
   },
   {
-    path: '/*',
-    element: <Login />,  // Default route
+    // Fallback route - Send to Login
+    path: '*', // Catch-all must be last
+    element: <Login />, // Or <Navigate to="/app/login" replace />
   },
 ]);
 
+// --- App Component (Wrap RouterProvider with ThemeProvider) ---
 function App() {
   return (
     <AuthProvider>
-      <div role="application">
-        <div className="app" role="main">
-          <div className="container" role="region" aria-label="content">
-            <RouterProvider router={router} />
-          </div>
-        </div>
-      </div>
+      <ThemeProvider> {/* <--- Global ThemeProvider wraps RouterProvider */}
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </AuthProvider>
   );
 }
