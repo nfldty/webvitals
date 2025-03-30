@@ -1,12 +1,12 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const SimpleBarChart = () => {
+const SimpleBarChart = (name1, name2, name3, name4, name5, visitor1, visitor2, visitor3, visitor4, visitor5) => {
   const data = [
-    { name: 'Item A', visitors: 100 },
-    { name: 'Item B', visitors: 200 },
-    { name: 'Item C', visitors: 150 },
-    { name: 'Item D', visitors: 150 },
-    { name: 'Item E', visitors: 150 },
+    { name: {name1}, visitors: {visitor1} },
+    { name: {name2}, visitors: {visitor2}},
+    { name: {name3}, visitors: {visitor3}},
+    { name: {name4}, visitors: {visitor4}},
+    { name: {name5}, visitors: {visitor5}},
   ];
 
   return (

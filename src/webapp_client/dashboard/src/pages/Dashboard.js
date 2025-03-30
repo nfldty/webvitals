@@ -1,11 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import FilterSelector from "../components/FilterSelector";
 import SimpleBarChart from './barChart.js'; 
 import '../style.css';
+import axios from 'axios';
+
 
 export const Dashboard = () => {
+  const [metrics, setMetrics] = useState({
+    mostTraffic:'',
+    leastTraffic:'',
+    totalSessions: '',
+    avgPagesPerSession: '',
+    liveUsers: '',
+    avgTotalTime: '',
+    avgTimePerPage: ''
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [filters, setFilters] = useState({});
+
+  // useEffect(() => {
+  //   const fetchData = async() => {
+  //     try {
+  //       const userId = 'user';
+  //       const response = await axios.get('/statistics?userId=${userId');
+  //       setMetrics(response.data);
+  //       setLoading(false);
+  //     } catch (err){
+  //       setError(err.message);
+  //       setLoading(false);
+  //     }
+  //   }
+  //   fetchData();
+  // }, []); 
   // Convert the snippet into a string so it can be displayed in an input.
   const snippet = `<script type="module" data-webvitals-widget src="http://localhost/widget.js" data-user-id="1" defer></script>`;
   const navigate = useNavigate();
@@ -17,6 +45,13 @@ export const Dashboard = () => {
 
     // For example: window.location.href = '/login';
   };
+
+  // if (loading){
+  //   return <p>Loading...</p>;
+  // }
+  // if (error){
+  //   return <p>Error: {error}</p>;
+  // }
 
   return (
     <div className="dashboard-container">
@@ -49,19 +84,19 @@ export const Dashboard = () => {
           </div>
           <div className="cards-container">
 
-          <div>
+          {/* <div>
               <p>Page Load Time</p>
               <div className="collection-card">
               <p className='average'>11</p>
                 <p className='average'>average</p>
               </div>
-            </div>
+            </div> */}
 
 
             <div>
               <p>Pages Per Session</p>
               <div className="collection-card">
-              <p className='average'>11</p>
+              <p className='average'>{metrics.avgPagesPerSession}</p>
                 <p className='average'>average</p>
               </div>
             </div>
@@ -69,7 +104,7 @@ export const Dashboard = () => {
             <div>
               <p>Total Time Spent</p>
               <div className="collection-card">
-              <p className='average'>11</p>
+              <p className='average'>{metrics.avgTotalTime}</p>
                 <p className= "average">average</p>
               </div>
             </div>
@@ -77,7 +112,7 @@ export const Dashboard = () => {
             <div>
               <p>Time Spent Per Page</p>
               <div className="collection-card">
-              <p className='average'>11</p>
+              <p className='average'>{metrics.avgTimePerPage}</p>
                 <p className='average'>average</p>
               </div>
             </div>
@@ -85,14 +120,14 @@ export const Dashboard = () => {
             <div>
               <p>Live Users</p>
               <div className="collection-card">
-                <p className='average'>50</p>
+                <p className='average'>{metrics.liveUsers}</p>
               </div>
             </div>
 
             <div>
               <p>Total Sessions</p>
               <div className="collection-card">
-                <p className='average'>11</p>
+                <p className='average'>{metrics.totalSessions}</p>
               </div>
             </div>
 
