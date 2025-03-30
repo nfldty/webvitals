@@ -1,6 +1,7 @@
 // src/pages/Overview.js
 import React, { useState, useEffect } from 'react';
 import FilterSelector from '../components/FilterSelector';
+import ExportMetrics from "../components/ExportMetrics";
 import { useAuth } from '../context/AuthContext';  // <-- Get userId from AuthContext
 import api from '../utils/api';
 import '../style.css';
@@ -180,6 +181,12 @@ const Overview = () => {
           </div>
         </div>
       )}
+
+      {/* Export tools */}
+      <div className="export-metrics">
+         {stats && <ExportMetrics data={stats} />}
+      </div>
+
     </div>
   );
 };
