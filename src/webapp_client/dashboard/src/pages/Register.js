@@ -45,11 +45,11 @@ export const Register = () => {
   return (
     <>
       <DashboardHeader />
-      <div className="form-container">
+      <main role="main" className="form-container">
         <div className="form-wrapper">
           <h1 className="page-heading">Create an Account</h1>
-          {errorMessage && <p className="error-message">{errorMessage}</p>}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          {errorMessage && <p role="alert" className="error-message">{errorMessage}</p>}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6" aria-label="Registration form">
             <div className="input-group">
               <label htmlFor="username" className="input-label">Username</label>
               <input
@@ -60,6 +60,7 @@ export const Register = () => {
                 placeholder="Enter your username"
                 onChange={handleChange}
                 className="input-field"
+                aria-required="true"
               />
             </div>
             <div className="input-group">
@@ -72,18 +73,19 @@ export const Register = () => {
                 placeholder="Enter your password"
                 onChange={handleChange}
                 className="input-field"
+                aria-required="true"
               />
             </div>
-            <button type="submit" className="btn">Register</button>
+            <button type="submit" className="btn" aria-label="Register account">Register</button>
             <p className="text-center text-sm text-gray-600">
               Already have an account?{' '}
-              <Link to="/app/login" className="link-text">
+              <Link to="/app/login" className="link-text" role="link">
                 Login
               </Link>
             </p>
           </form>
         </div>
-      </div>
+      </main>
     </>
   );
 };

@@ -37,11 +37,11 @@ export const Login = () => {
   return (
     <>
       <DashboardHeader />
-      <div className="form-container">
-        <div className="form-wrapper">
+      <main role="main" className="form-container">
+        <div className="form-wrapper" role="region" aria-label="Login form">
           <h1 className="page-heading">Welcome Back</h1>
-          {errorMessage && <p className="error-message">{errorMessage}</p>}
-          <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+          {errorMessage && <p className="error-message" role="alert">{errorMessage}</p>}
+          <form className="flex flex-col gap-6" onSubmit={handleSubmit} aria-labelledby="login-heading">
             <div className="input-group">
               <label htmlFor="username" className="input-label">Username</label>
               <input
@@ -51,6 +51,7 @@ export const Login = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="input-field"
+                aria-required="true"
               />
             </div>
             <div className="input-group">
@@ -62,18 +63,19 @@ export const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="input-field"
+                aria-required="true"
               />
             </div>
-            <button type="submit" className="btn">Login</button>
+            <button type="submit" className="btn" aria-label="Login to your account">Login</button>
             <p className="text-center text-sm text-gray-600">
               Don&apos;t have an account?{' '}
-              <Link to="/app/register" className="link-text">
+              <Link to="/app/register" className="link-text" role="link">
                 Register
               </Link>
             </p>
           </form>
         </div>
-      </div>
+      </main>
     </>
   );
 };

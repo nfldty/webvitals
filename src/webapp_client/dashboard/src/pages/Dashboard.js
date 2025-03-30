@@ -73,7 +73,6 @@ export const Dashboard = () => {
           >
             <option value="light">Light Mode</option>
             <option value="dark">Dark Mode</option>
-            <option value="deuteranopia">Deuteranopia</option>
           </select>
         </aside>
         <main className="dashboard-main" role="main">
