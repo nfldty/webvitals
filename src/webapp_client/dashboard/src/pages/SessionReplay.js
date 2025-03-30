@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
+import '../style.css';
 
 export default function SessionReplay() {
   const { userId } = useAuth();
@@ -38,8 +39,6 @@ export default function SessionReplay() {
     try {
       const res = await api.get(`/sessions/${selectedSession}/events`);
       setEvents(res.data);
-      console.log('Fetched session events:', res.data);
-      console.log('first element: ', res.data[0]);
       eventIndexRef.current = 0;
     } catch (error) {
       console.error('Error fetching session events:', error);
@@ -77,19 +76,27 @@ export default function SessionReplay() {
   };
 
   return (
-    <div style={{ textAlign: 'center', padding: '20px' }}>
-      <h1>Session Replay</h1>
-      <div style={{ marginBottom: '20px' }}>
-        <p>User ID: {userId}</p>
-      </div>
-      {sessions.length > 0 && (
-        <div style={{ marginBottom: '20px' }}>
-          <label>
-            Select Session:{' '}
+    <div className="form-container">
+      <div className="form-wrapper" style={{ maxWidth: '878px' }}>
+        <h1 className="page-heading">Session Replay</h1>
+
+        <div className="input-group" style={{ marginBottom: '20px' }}>
+          <label className="input-label">User ID</label>
+          <input
+            type="text"
+            className="input-field"
+            value={userId || ''}
+            disabled
+          />
+        </div>
+
+        {sessions.length > 0 && (
+          <div className="input-group" style={{ marginBottom: '20px' }}>
+            <label className="input-label">Select Session</label>
             <select
               value={selectedSession}
               onChange={(e) => setSelectedSession(e.target.value)}
-              style={{ marginLeft: '10px' }}
+              className="input-field"
             >
               <option value="">-- Select --</option>
               {sessions.map((session) => (
@@ -98,29 +105,32 @@ export default function SessionReplay() {
                 </option>
               ))}
             </select>
-          </label>
-          <button onClick={fetchSessionEvents} style={{ marginLeft: '10px' }}>
-            Load Session
+            <button className="btn" onClick={fetchSessionEvents}>
+              Load Session
+            </button>
+          </div>
+        )}
+
+        <div className="input-group" style={{ marginBottom: '20px' }}>
+          <button
+            className="btn"
+            onClick={startReplay}
+            disabled={isPlaying || events.length === 0}
+          >
+            Start
+          </button>
+          <button
+            className="btn"
+            onClick={pauseReplay}
+            disabled={!isPlaying}
+            style={{ marginLeft: '10px' }}
+          >
+            Pause
           </button>
         </div>
-      )}
-      <div style={{ marginBottom: '20px' }}>
-        <button
-          onClick={startReplay}
-          disabled={isPlaying || events.length === 0}
-          style={{ marginRight: '10px' }}
-        >
-          Start
-        </button>
-        <button
-          onClick={pauseReplay}
-          disabled={!isPlaying}
-          style={{ marginLeft: '10px' }}
-        >
-          Pause
-        </button>
-        <label style={{ marginLeft: '10px' }}>
-          Speed:
+
+        <div className="input-group" style={{ marginBottom: '20px' }}>
+          <label className="input-label">Speed</label>
           <input
             type="range"
             min="0.5"
@@ -130,17 +140,18 @@ export default function SessionReplay() {
             onChange={(e) => setReplaySpeed(Number(e.target.value))}
             style={{ marginLeft: '10px' }}
           />
-          {replaySpeed}x
-        </label>
+          <span style={{ marginLeft: '10px' }}>{replaySpeed}x</span>
+        </div>
+
+        <iframe
+          ref={iframeRef}
+          src="/app/test.html?webvitals-tracking-switch=False"
+          width="878"
+          height="812"
+          title="Session Replay"
+          style={{ border: '1px solid black', marginTop: '20px' }}
+        ></iframe>
       </div>
-      <iframe
-        ref={iframeRef}
-        src="/app/test.html?webvitals-tracking-switch=False"
-        width="878"
-        height="812"
-        title="Session Replay"
-        style={{ border: '1px solid black', marginTop: '20px' }}
-      ></iframe>
     </div>
   );
 }
