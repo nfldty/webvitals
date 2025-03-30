@@ -7,6 +7,7 @@ import Settings from './Settings';
 import Overview from './Overview';
 import Heatmap from './Heatmap';
 import DashboardHeader from '../components/DashboardHeader';
+import { useAuth } from '../context/AuthContext';
 
 
 export const Dashboard = () => {
@@ -14,11 +15,12 @@ export const Dashboard = () => {
   // Convert the snippet into a string so it can be displayed in an input.
   const snippet = `<script type="module" data-webvitals-widget src="http://localhost/widget/widget.js" data-user-id="1" defer></script>`;
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
     // Implement logout logic here (e.g., clear tokens, redirect, etc.)
     console.log("User logged out");
-    localStorage.setItem('authToken', '');
+    logout();
     navigate('/app/login');
   };
 

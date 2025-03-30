@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // To navigate after successful registration
-import { useAuth } from '../context/AuthContext';  // Import the custom hook for AuthContext
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 
 export const Register = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();  // Access login function from AuthContext
+  const { login } = useAuth();
 
-  // State for form fields
   const [inputs, setInputs] = useState({
     username: '',
     password: '',
@@ -27,17 +26,13 @@ export const Register = () => {
     }
 
     try {
-      // Send POST request to the backend to register the user
       const response = await api.post('/auth/register', {
         username: inputs.username,
         password: inputs.password,
       });
 
       if (response.status === 201) {
-        // Now automatically log in the user after successful registration
-        login(response.data.token);  // Store token and userId in global state
-
-        // Redirect user to the dashboard after successful login
+        login(response.data.token);
         navigate('/app/dashboard');
       }
     } catch (error) {

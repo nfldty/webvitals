@@ -1,8 +1,9 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
+import Cookies from 'js-cookie'; // Import js-cookie to manage cookies
 
 const ProtectedRoute = ({ element }) => {
-  const token = localStorage.getItem('authToken');  // Get the token from localStorage
+  const token = Cookies.get('authToken'); // Get the token from cookies
 
   if (!token) {
     // If there's no token, redirect to the login page
