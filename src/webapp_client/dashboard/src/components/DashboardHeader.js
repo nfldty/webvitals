@@ -5,7 +5,7 @@ import '../style.css';
 export const DashboardHeader = () => {
     return (
         <header className="dashboard-header">
-            <h1>Webvitals Dashboard</h1>
+            <h1>Webvitals</h1>
         </header>
     )
 }

@@ -8,6 +8,7 @@ import Overview from './Overview';
 import Heatmap from './Heatmap';
 import DashboardHeader from '../components/DashboardHeader';
 import { useAuth } from '../context/AuthContext';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 
 export const Dashboard = () => {
@@ -28,15 +29,15 @@ export const Dashboard = () => {
   const renderContent = () => {
     switch (page) {
       case "overview":
-        return <Overview />;
+        return <ProtectedRoute element={Overview} />;
       case "heatmap":
-        return <Heatmap />;
+        return <ProtectedRoute element={Heatmap} />;
       case "sessionReplay":
-        return <SessionReplay />;
+        return <ProtectedRoute element={SessionReplay} />;
       case "settings":
-        return <Settings />;
+        return <ProtectedRoute element={Settings} />;
       default:
-        return <Overview />;
+        return <ProtectedRoute element={Overview} />;
     }
   };
 
