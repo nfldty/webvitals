@@ -1,16 +1,17 @@
 const prisma = require('../prisma/prismaClient');
+const filterUtil = require('./filter').applyFilters;
 
 // Define the individual statistics functions
 
-async function getMostTraffic(userId, takeNum) {
+async function getMostTraffic(userId, takeNum, filter) {
   try {
-    const result = await prisma.pageVisit.groupBy({
+    const result = await prisma.pageVisit.groupBy(filterUtil({
       by: ['pageUrl'],
       where: { userId: userId },  // userId is expected to be a string
       _count: { pageUrl: true },
       orderBy: { _count: { pageUrl: 'desc' } },
       take: takeNum,
-    });
+    }, filter));
     return result;
   } catch (error) {
     console.error('Error fetching most traffic pages for user:', error);
@@ -18,15 +19,15 @@ async function getMostTraffic(userId, takeNum) {
   }
 }
 
-async function getLeastTraffic(userId, takeNum) {
+async function getLeastTraffic(userId, takeNum, filter) {
   try {
-    const result = await prisma.pageVisit.groupBy({
+    const result = await prisma.pageVisit.groupBy(filterUtil({
       by: ['pageUrl'],
       where: { userId: userId }, // Filter by userId
       _count: { pageUrl: true },
       orderBy: { _count: { pageUrl: 'asc' } },
       take: takeNum,
-    });
+    }, filter));
     return result;
   } catch (error) {
     console.error('Error fetching least traffic pages for user:', error);
@@ -34,11 +35,11 @@ async function getLeastTraffic(userId, takeNum) {
   }
 }
 
-async function getTotalSession(userId) {
+async function getTotalSession(userId, filter) {
   try {
-    const result = await prisma.session.count({
+    const result = await prisma.session.count(filterUtil({
       where: { userId: userId }, // Filter by userId
-    });
+    }, filter, true));
     return result;
   } catch (error) {
     console.error('Error fetching total sessions for user:', error);
@@ -46,33 +47,33 @@ async function getTotalSession(userId) {
   }
 }
 
-async function getAveragePagesPerSession(userId) {
+async function getAveragePagesPerSession(userId, filter) {
   try {
     // Count the total number of pages (total page visits) for a specific user
-    const totalPages = await prisma.pageVisit.count({
+    const totalPages = await prisma.pageVisit.count(filterUtil({
       where: { userId: userId }, // Filter by userId
-    });
+    }, filter));
 
     // Count the total number of sessions for the specific user
-    const totalSessions = await prisma.session.count({
+    const totalSessions = await prisma.session.count(filterUtil({
       where: { userId: userId }, // Filter by userId
-    });
+    }, filter, true));
 
     // Calculate the average pages per session
     const averagePagesPerSession = totalSessions === 0 ? 0 : totalPages / totalSessions;
 
-    return averagePagesPerSession;
+    return averagePagesPerSession < 1 ? 1 : averagePagesPerSession.toFixed(); // Ensure at least 1 page per session
   } catch (error) {
     console.error('Error fetching average pages per session for user:', error);
     throw error;
   }
 }
 
-async function getLiveUsers(userId) {
+async function getLiveUsers(userId, filter) {
   try {
-    const sessions = await prisma.session.findMany({
+    const sessions = await prisma.session.findMany(filterUtil({
       where: { userId: userId }
-    });
+    }, filter, true));
     let liveSessions = 0;
     for (const session of sessions) {
       const latestMovement = await prisma.mouseMovement.findFirst({
@@ -91,16 +92,16 @@ async function getLiveUsers(userId) {
 }
 
 // Function to get average time spent per page for a specific user
-async function getAverageTimePerPage(userId) {
+async function getAverageTimePerPage(userId, filter) {
   try {
-    const pageVisits = await prisma.pageVisit.findMany({
+    const pageVisits = await prisma.pageVisit.findMany(filterUtil({
       where: {
         userId: userId, // Filter by userId
         leftAt: {
           not: null, // Only consider visits where the user left the page
         },
       },
-    });
+    }, filter));
 
     let totalTime = 0;
     let totalVisits = 0;
@@ -112,7 +113,7 @@ async function getAverageTimePerPage(userId) {
     });
 
     const averageTime = totalVisits === 0 ? 0 : totalTime / totalVisits; // Return average time
-    return averageTime / 1000; // Return time in seconds
+    return Math.floor(averageTime / 1000);; // Return time in seconds
   } catch (error) {
     console.error('Error fetching average time per page for user:', error);
     throw error;
@@ -120,13 +121,13 @@ async function getAverageTimePerPage(userId) {
 }
 
 // Function to get the average total time spent for a specific user
-async function getAverageTotalTime(userId) {
+async function getAverageTotalTime(userId, filter) {
   try {
-    const timeRecords = await prisma.timeSpent.findMany({
+    const timeRecords = await prisma.timeSpent.findMany(filterUtil({
       where: {
         userId: userId, // Filter by userId
       },
-    });
+    }, filter));
 
     let totalTime = 0;
     let totalRecords = 0;
@@ -137,31 +138,31 @@ async function getAverageTotalTime(userId) {
     });
 
     const averageTime = totalRecords === 0 ? 0 : totalTime / totalRecords;
-    return averageTime; // This will return average time in the units defined in your model (e.g., seconds)
+    return Math.floor(averageTime / 1000); // This will return average time in the units defined in your model (e.g., seconds)
   } catch (error) {
     console.error('Error fetching average total time for user:', error);
     throw error;
   }
 }
 
-async function getClickStatistics(userId) {
+async function getClickStatistics(userId, filter) {
   try {
     
-    const clicks = await prisma.mouseClick.count({
+    const clicks = await prisma.mouseClick.count(filterUtil({
       where: { userId: userId },
-    });
+    }, filter));
     
-    const rageClicks = await prisma.mouseClick.count({
+    const rageClicks = await prisma.mouseClick.count(filterUtil({
       where: { userId: userId, isRage: true },
-    });
+    }, filter));
     
-    const deadClicks = await prisma.mouseClick.count({
+    const deadClicks = await prisma.mouseClick.count(filterUtil({
       where: { userId: userId, isDead: true },
-    });
+    }, filter));
     
-    const quickBack = await prisma.mouseClick.count({
+    const quickBack = await prisma.mouseClick.count(filterUtil({
       where: { userId: userId, isQuickBack: true },
-    });
+    }, filter));
     
     const ragePercent = clicks === 0 ? '0.00%' : ((rageClicks / clicks) * 100).toFixed(2) + '%';
     const deadPercent = clicks === 0 ? '0.00%' : ((deadClicks / clicks) * 100).toFixed(2) + '%';
@@ -190,19 +191,19 @@ async function getClickStatistics(userId) {
   }
 }
 
-async function getExtraData(userId) {
+async function getExtraData(userId, filter) {
   try {
-    const totalCount = await prisma.extraData.count({
+    const totalCount = await prisma.extraData.count(filterUtil({
       where: { userId },
-    });
+    }, filter));
   
     // Function to get grouped data and format with count & percentage
     async function getGroupedData(field) {
-      const groupedData = await prisma.extraData.groupBy({
+      const groupedData = await prisma.extraData.groupBy(filterUtil({
         by: [field],
         where: { userId },
         _count: { [field]: true },
-      });
+      }, filter));
   
       return groupedData.map(item => ({
         [field]: item[field],

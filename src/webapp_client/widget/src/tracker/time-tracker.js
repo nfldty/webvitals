@@ -22,7 +22,7 @@ function trackTimeSpent() {
 }
 
 // Automatically start tracking when the script is loaded
-trackTimeSpent();
+//trackTimeSpent();
 
 // Export the function
 export { trackTimeSpent };
