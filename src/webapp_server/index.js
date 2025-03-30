@@ -1,6 +1,7 @@
 const express = require('express');
 const authRoutes = require('./routes/auth');
 const statisticsRoutes = require('./routes/statistics');
+const heatmapRoutes = require('./routes/heatmap');
 const authMiddleware = require('./middleware/authMiddleware');
 const PORT = process.env.WEBAPP_SERVER_PORT || 3001;
 const app = express();
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use('/auth', authRoutes);
 app.use('/', statisticsRoutes);
+app.use('/', heatmapRoutes);
 app.get('/test', (req, res) => {
     res.json({ status: 'OK' });
   });
