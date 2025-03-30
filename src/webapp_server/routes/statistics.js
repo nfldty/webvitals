@@ -26,8 +26,8 @@ router.get('/statistics', async (req, res) => {
             });
         }
 
-        const mostTraffic = await getMostTraffic(userId, 1);
-        const leastTraffic = await getLeastTraffic(userId, 1);
+        const mostTraffic = await getMostTraffic(userId, 5);
+        const leastTraffic = await getLeastTraffic(userId, 5);
         const totalSessions = await getTotalSession(userId);
         const avgPagesPerSession = await getAveragePagesPerSession(userId);
         const liveUsers = await getLiveUsers(userId);
@@ -150,6 +150,7 @@ router.get('/filteredStatistics', async (req, res) => {
             liveUsers,
             avgTotalTime,
             avgTimePerPage,
+
         };
   
         res.json(statistics);
