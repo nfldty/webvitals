@@ -82,6 +82,9 @@ const Overview = () => {
   // --- JSX ---
   return (
      <div className="overview-container">
+        {/* Snippet section */}
+        {!loading && !error && ( <div className="widget-card snippet-card"> <h3 className="bundle-title">Embed Widget</h3> <p>Insert this snippet into your web page's HTML:</p> <input type="text" readOnly value={snippet} onClick={(e) => e.target.select()} aria-label="Widget Snippet"/> </div> )}
+ 
          {/* Filter section */}
          <h2 className="section-label">Filter</h2>
          <div className="filters-bar">
@@ -106,9 +109,7 @@ const Overview = () => {
               )}
               {!loading && !error && !stats && ( <div className="no-data" style={{gridColumn: '1 / -1'}}>No statistics data available.</div> )}
          </div>
-         {/* Snippet section */}
-           {!loading && !error && ( <div className="widget-card snippet-card"> <h3 className="bundle-title">Embed Widget</h3> <p>Insert this snippet into your web page's HTML:</p> <input type="text" readOnly value={snippet} onClick={(e) => e.target.select()} aria-label="Widget Snippet"/> </div> )}
-           {/* Export section */}
+          {/* Export section */}
            {!loading && !error && stats && ( <div className="export-metrics-container"> <h2 className="section-label">Export</h2> <ExportMetrics data={stats} /> </div> )}
      </div>
    );
