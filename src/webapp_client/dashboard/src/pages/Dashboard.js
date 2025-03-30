@@ -29,15 +29,15 @@ export const Dashboard = () => {
   const renderContent = () => {
     switch (page) {
       case "overview":
-        return <ProtectedRoute element={Overview} />;
+        return <ProtectedRoute element={<Overview />} />;
       case "heatmap":
-        return <ProtectedRoute element={Heatmap} />;
+        return <ProtectedRoute element={<Heatmap/>} />;
       case "sessionReplay":
-        return <ProtectedRoute element={SessionReplay} />;
+        return <ProtectedRoute element={<SessionReplay/>} />;
       case "settings":
-        return <ProtectedRoute element={Settings} />;
+        return <ProtectedRoute element={<Settings/>} />;
       default:
-        return <ProtectedRoute element={Overview} />;
+        return <ProtectedRoute element={<Overview/>} />;
     }
   };
 
