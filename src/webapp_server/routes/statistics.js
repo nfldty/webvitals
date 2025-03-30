@@ -174,7 +174,7 @@ router.get('/sessions', async (req, res) => {
       // Use the same field names as in your statistics route
       const sessions = await prisma.session.findMany({
         where: { userId },
-        orderBy: { createdAt: 'desc' }
+        orderBy: { startTime: 'desc' }
       });
       res.json(sessions);
     } catch (error) {
