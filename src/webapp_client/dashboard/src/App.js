@@ -6,13 +6,13 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import SessionReplay from './pages/SessionReplay';
 import Heatmap from './pages/Heatmap';
-// import ProtectedRoute from './components/ProtectedRoute';  // Import the ProtectedRoute
+import ProtectedRoute from './components/ProtectedRoute';  // Import the ProtectedRoute
 
 const router = createBrowserRouter([
   {
     path: 'app/dashboard',
-    // element: <ProtectedRoute element={<Dashboard />} />,  // Protect this route
-    element: <Dashboard />,
+    element: <ProtectedRoute element={<Dashboard />} />,  // Protect this route
+    //element: <Dashboard />,
   },
   {
     path: 'app/register',
@@ -24,11 +24,11 @@ const router = createBrowserRouter([
   },
   {
     path: 'app/heatmap',
-    // element: <ProtectedRoute element={<Heatmap />} />,  // Protect this route
+    element: <ProtectedRoute element={<Heatmap />} />,  // Protect this route
   },
   {
     path: 'app/session-replay',
-    // element: <ProtectedRoute element={<SessionReplay />} />,  // Protect this route
+    element: <ProtectedRoute element={<SessionReplay />} />,  // Protect this route
     
   },
   {
