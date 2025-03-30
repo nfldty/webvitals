@@ -184,6 +184,12 @@
   justify-content: space-between;
   gap: 50px;
   width: 500px;
+  margin-top:10px;
+}
+
+.click-statistics-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .click-statistics-item {
