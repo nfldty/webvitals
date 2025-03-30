@@ -13,7 +13,7 @@ if (trackingEnabled) {
   trackMouseData();
   trackTimeSpent();
   trackPageTransitions();
-  trackJourney();
+//   trackJourney();
   trackImageAccessibility();
   trackExtraData();
 } else {
