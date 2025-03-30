@@ -11,6 +11,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [authToken, setAuthToken] = useState(Cookies.get('authToken') || null);
   const [userId, setUserId] = useState(null);
+  
 
   useEffect(() => {
     if (authToken) {
