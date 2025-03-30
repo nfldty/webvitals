@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 // Create a context
 const AuthContext = createContext();
@@ -8,10 +9,9 @@ export const useAuth = () => useContext(AuthContext);
 
 // Create the AuthProvider component
 export const AuthProvider = ({ children }) => {
-  const [authToken, setAuthToken] = useState(localStorage.getItem('authToken') || null);
+  const [authToken, setAuthToken] = useState(Cookies.get('authToken') || null);
   const [userId, setUserId] = useState(null);
 
-  // This effect will run when the token is updated
   useEffect(() => {
     if (authToken) {
       const userId = getUserIdFromToken(authToken);
@@ -21,12 +21,10 @@ export const AuthProvider = ({ children }) => {
     }
   }, [authToken]);
 
-  // Function to extract userId from JWT token
   const getUserIdFromToken = (token) => {
     try {
       const parts = token.split('.');
       if (parts.length !== 3) return null;
-
       const decodedPayload = atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'));
       const payload = JSON.parse(decodedPayload);
       return payload.id;
@@ -35,17 +33,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Login function to store the token and userId
+  // Login function to store the token in cookies
   const login = (token) => {
     setAuthToken(token);
-    localStorage.setItem('authToken', token);  // Save the token in localStorage
+    console.log('Auth token',token);
+    Cookies.set('authToken', token, { expires: 7, secure: false, sameSite: 'Strict' });
+    console.log('Cookies',Cookies.get('authToken'));
   };
 
-  // Logout function to clear the token and userId
+  // get function to clear the token and userId
   const logout = () => {
     setAuthToken(null);
     setUserId(null);
-    localStorage.removeItem('authToken');  // Remove the token from localStorage
+    Cookies.remove('authToken');
   };
 
   // Function to get the current user ID
