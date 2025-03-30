@@ -66,3 +66,62 @@
     margin-top: 2rem;
   }
   
+  .collection-card {
+    width: 160px;
+    background-color: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 10px;
+    margin-left: 2px;
+    margin-bottom: 10px;
+    flex:1;
+  }
+
+  #collectionBar {
+      width: 500px;
+      background-color: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-top: 10px;
+      margin-left: 2px;
+    }
+
+  .collection-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .cards-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+
+  }
+  
+  .collection-card p{
+    text-align: left;
+    margin: 10px;
+  }
+
+
+  #bar {
+    margin:10px;
+  }
+  
+  @media (max-width: 768px) {
+    .collection-card {
+      width: 48%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .collection-card {
+      width: 100%;
+    }
+  }

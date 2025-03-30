@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import FilterSelector from "../components/FilterSelector";
+import SimpleBarChart from './barChart.js'; 
 import '../style.css';
 
 export const Dashboard = () => {
@@ -46,7 +47,78 @@ export const Dashboard = () => {
           <div className="filters-section">
             <FilterSelector onApplyFilters={setFilters} />
           </div>
-          <h1 className="dashboard-title">THIS IS THE DASHBOARD</h1>
+          <div className="cards-container">
+
+          <div>
+              <p>Page Load Time</p>
+              <div className="collection-card">
+              <p className='average'>11</p>
+                <p className='average'>average</p>
+              </div>
+            </div>
+
+
+            <div>
+              <p>Pages Per Session</p>
+              <div className="collection-card">
+              <p className='average'>11</p>
+                <p className='average'>average</p>
+              </div>
+            </div>
+
+            <div>
+              <p>Total Time Spent</p>
+              <div className="collection-card">
+              <p className='average'>11</p>
+                <p className= "average">average</p>
+              </div>
+            </div>
+
+            <div>
+              <p>Time Spent Per Page</p>
+              <div className="collection-card">
+              <p className='average'>11</p>
+                <p className='average'>average</p>
+              </div>
+            </div>
+
+            <div>
+              <p>Live Users</p>
+              <div className="collection-card">
+                <p className='average'>50</p>
+              </div>
+            </div>
+
+            <div>
+              <p>Total Sessions</p>
+              <div className="collection-card">
+                <p className='average'>11</p>
+              </div>
+            </div>
+
+            <div>
+
+            </div>
+          </div>
+          <div className="cards-container">
+              <div className="collection-card" id="collectionBar">
+              <p> Most Traffic Pages</p>
+              <div id="bar">
+              <SimpleBarChart />
+              </div>
+              </div>
+
+
+              <div className="collection-card" id="collectionBar">
+              <p>Least Traffic Pages</p>
+              <div id="bar">
+              <SimpleBarChart />
+              </div>
+              </div>
+              
+
+              
+            </div>
         </main>
       </div>
     </div>
