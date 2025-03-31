@@ -41,10 +41,5 @@ async function sendAccessibilityReport(issues) {
     });
 }
 
-// Initialize the accessibility check when the page is loaded
-window.addEventListener('load', () => {
-    trackImageAccessibility();
-});
-
 // Export the function for use in other parts of the application
 export { trackImageAccessibility };

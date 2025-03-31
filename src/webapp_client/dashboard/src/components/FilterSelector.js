@@ -39,12 +39,12 @@ export default function FilterSelector({ oncli, onApplyFilters }) {
                 />
             </div>
             <div className="filter-group">
-                <label>Page URL (Regex)</label>
+                <label>Page URL</label>
                 <input 
                   type="text" 
                   value={pageUrl} 
                   onChange={(e) => setPageUrl(e.target.value)} 
-                  placeholder="e.g. .*example.*" 
+                  placeholder="e.g. example" 
                 />
             </div>
             <div className="filter-group">
