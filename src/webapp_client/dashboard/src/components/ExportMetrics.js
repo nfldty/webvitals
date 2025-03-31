@@ -102,9 +102,13 @@ export default function ExportMetrics({ data }) {
   };
 
   return (
-    <div className="export-buttons">
-      <button onClick={exportPDF}>Export as PDF</button>
-      <button onClick={exportCSV}>Export as CSV</button>
+    <div className="export-buttons" style={{ display: 'flex', gap: '10px' }}>
+      <div>
+        <button onClick={exportPDF}>Export as PDF</button>
+      </div>
+      <div>
+        <button onClick={exportCSV}>Export as CSV</button>
+      </div>
     </div>
   );
 }
