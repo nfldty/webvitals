@@ -6,7 +6,7 @@ const operatorMap = {
   ">=": "gte"
 };
 
-function applyFilters(prismaQuery, queryParams) {
+function applyFilters(prismaQuery, queryParams, session) {
   if (!queryParams) {
       return prismaQuery;
   }
@@ -16,7 +16,17 @@ function applyFilters(prismaQuery, queryParams) {
       prismaQuery.where = {};
   }
 
-  const target = prismaQuery.where; // Apply filters directly to 'where'
+  let target;
+  if (!session){
+    if (!prismaQuery.where.session) {
+      prismaQuery.where.session = {};
+    }
+    target = prismaQuery.where.session;
+  }
+  else {
+    target = prismaQuery.where;
+  }
+  
 
   // --- Date Filtering ---
   const dateFilter = {};
@@ -58,18 +68,11 @@ function applyFilters(prismaQuery, queryParams) {
           const prismaOperator = operatorMap[operator];
 
           if (prismaOperator && !isNaN(value)) {
-              // --- IMPORTANT: Choose ONE option based on your 'timeSpent' field type ---
-
-              // OPTION A: If 'timeSpent' is a Number (e.g., Int, Float) on Session model
-               target.timeSpent = { [prismaOperator]: value }; // Replace 'timeSpent' with your actual field name
-
-              // OPTION B: If 'timeSpent' is a Relation on Session model
-              // target.timeSpent = {
-              //   some: {
-              //     elapsedTime: { [prismaOperator]: value }, // Replace 'elapsedTime' with field in related model
-              //   },
-              // };
-              // --- End of options ---
+              target.timeSpent = {
+                some: {
+                  elapsedTime: { [prismaOperator]: value }, 
+                },
+              };
           } else {
               console.error("Invalid elapsed_time value or operator:", queryParams.elapsed_time);
           }
