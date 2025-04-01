@@ -59,22 +59,33 @@
             padding: 10px;
             border-bottom: 1px solid #ddd;
         }
+        .page-link {
+            display: block;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .page-link:hover {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Basic Page</h1>
-
-        <!-- Large Button -->
-        <button class="large-button" onclick="alert('Button Clicked!')">Click Me</button>
-
-        <!-- Image -->
+    <!-- Page 1 -->
+    <div class="container" id="page1">
+        <h1>Page 1</h1>
+        <button class="large-button" onclick="changeButtonColor()">Click Me</button>
         <div class="image-container">
             <img src="https://placehold.co/600x400" alt="Sample Image">
         </div>
-
-        <!-- Scrollable List -->
         <div class="scrollable-list">
             <ul>
                 <li>Item 1</li>
@@ -82,15 +93,95 @@
                 <li>Item 3</li>
                 <li>Item 4</li>
                 <li>Item 5</li>
-                <li>Item 6</li>
-                <li>Item 7</li>
-                <li>Item 8</li>
-                <li>Item 9</li>
-                <li>Item 10</li>
             </ul>
         </div>
+        <a href="javascript:void(0)" onclick="showPage('page2')" class="page-link">Go to Page 2</a>
+        <a href="javascript:void(0)" onclick="showPage('page3')" class="page-link">Go to Page 3</a>
     </div>
-    
+
+    <!-- Page 2 -->
+    <div class="container hidden" id="page2">
+        <h1>Page 2</h1>
+        <button class="large-button" onclick="changeButtonColor()">Click Me</button>
+        <div class="image-container">
+            <img src="https://placehold.co/600x400" alt="Sample Image">
+        </div>
+        <div class="scrollable-list">
+            <ul>
+                <li>Item A</li>
+                <li>Item B</li>
+                <li>Item C</li>
+                <li>Item D</li>
+                <li>Item E</li>
+            </ul>
+        </div>
+        <a href="javascript:void(0)" onclick="showPage('page1')" class="page-link">Go to Page 1</a>
+        <a href="javascript:void(0)" onclick="showPage('page3')" class="page-link">Go to Page 3</a>
+    </div>
+
+    <!-- Page 3 -->
+    <div class="container hidden" id="page3">
+        <h1>Page 3</h1>
+        <button class="large-button" onclick="changeButtonColor()">Click Me</button>
+        <div class="image-container">
+            <img src="https://placehold.co/600x400" alt="Sample Image">
+        </div>
+        <div class="scrollable-list">
+            <ul>
+                <li>Item X</li>
+                <li>Item Y</li>
+                <li>Item Z</li>
+                <li>Item W</li>
+                <li>Item V</li>
+            </ul>
+        </div>
+        <a href="javascript:void(0)" onclick="showPage('page1')" class="page-link">Go to Page 1</a>
+        <a href="javascript:void(0)" onclick="showPage('page2')" class="page-link">Go to Page 2</a>
+    </div>
+
+    <script>
+        function changeButtonColor() {
+            const button = event.target;
+            const colors = ['#007bff', '#28a745', '#dc3545', '#ffc107'];
+            const currentColor = button.style.backgroundColor;
+            const newColor = colors[(colors.indexOf(currentColor) + 1) % colors.length];
+            button.style.backgroundColor = newColor;
+        }
+
+        // Function to show a specific page
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.container');
+            pages.forEach(page => page.classList.add('hidden')); // Hide all pages
+            const activePage = document.getElementById(pageId);
+            activePage.classList.remove('hidden'); // Show the selected page
+        
+            // Update the URL to reflect the page state
+            const pageNumber = pageId.replace('page', '');
+            // Ensure that the URL is correctly set without appending repeated parts
+            history.pushState({ page: pageNumber }, '', `?page=${pageNumber}`);
+        }
+        
+
+        // Handle back and forward navigation
+        window.onpopstate = function(event) {
+            if (event.state && event.state.page) {
+                showPage('page' + event.state.page);
+            }
+        };
+
+        // Show the page based on the current URL when the page loads
+        window.onload = function() {
+            const path = window.location.pathname.split('/');
+            const pageId = path[path.length - 1];
+            if (pageId && pageId !== 'test.html') {
+                showPage('page' + pageId);
+            } else {
+                showPage('page1');
+            }
+        };
+    </script>
     <script type="module" data-webvitals-widget src="http://localhost/widget/widget.js" data-user-id="1" defer></script>
 </body>
 </html>
+
+

@@ -7,7 +7,6 @@ import DashboardHeader from '../components/DashboardHeader'; // Keep the specifi
 
 export const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -27,7 +26,6 @@ export const Login = () => {
     try {
       const response = await api.post('/auth/login', { username, password });
       if (response.status === 200) {
-
         navigate('/app/dashboard');
       }
       // No explicit else needed if error status codes throw exceptions

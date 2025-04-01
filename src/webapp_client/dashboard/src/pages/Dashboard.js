@@ -21,6 +21,7 @@ export const Dashboard = () => {
   // Logout Handler (common logic)
   const handleLogout = () => {
     api.post('/auth/logout'); // Call the logout API
+    localStorage.removeItem("currentUserId");
     navigate('/app/login'); // Redirect to login
   };
 
