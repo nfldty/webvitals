@@ -8,7 +8,6 @@ import DashboardHeader from '../components/DashboardHeader'; // Keep the specifi
 
 export const Register = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   const [inputs, setInputs] = useState({
     username: '',
@@ -39,8 +38,7 @@ export const Register = () => {
       });
       // Logic from new file assumes token is always present on 201
       if (response.status === 201 && response.data.token) {
-        login(response.data.token);
-        navigate('/app/dashboard');
+        navigate('/app/login');
       } else {
         // Added contingency if 201 received but no token (unlikely but safe)
          setErrorMessage(response.data?.message || 'Registration successful, but auto-login failed. Please log in manually.');

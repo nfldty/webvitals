@@ -5,7 +5,7 @@ import api from '../utils/api';
 import '../style.css';
 
 export default function SessionReplay() {
-  const { currentUserId } = useAuth();
+  const { userId } = useAuth();
   const [sessions, setSessions] = useState([]);
   const [selectedSession, setSelectedSession] = useState('');
   const [events, setEvents] = useState([]);
@@ -18,15 +18,15 @@ export default function SessionReplay() {
 
   // Automatically fetch sessions when userId is available
   useEffect(() => {
-    if (currentUserId) {
+    if (userId) {
       fetchSessions();
     }
-  }, [currentUserId]);
+  }, [userId]);
 
   // Fetch sessions for the current user
   const fetchSessions = async () => {
     try {
-      const res = await api.get('/sessions', { params: { userId: currentUserId } });
+      const res = await api.get('/sessions', { params: { userId:userId } });
       setSessions(res.data);
     } catch (error) {
       console.error('Error fetching sessions:', error);
@@ -75,7 +75,7 @@ export default function SessionReplay() {
     sendNextEvent();
     intervalRef.current = setInterval(() => {
       sendNextEvent();
-    }, 1000 / (60 * replaySpeed));
+    }, 1000 / (30 * replaySpeed));
   };
 
   // Pause replay
@@ -90,7 +90,7 @@ export default function SessionReplay() {
 
   return (
     <div className="form-container">
-      <div className="form-wrapper" style={{ maxWidth: '878px' }}>
+      <div className="form-wrapper">
         <h1 className="page-heading">Session Replay</h1>
 
         <div className="input-group" style={{ marginBottom: '20px' }}>
@@ -98,7 +98,7 @@ export default function SessionReplay() {
           <input
             type="text"
             className="input-field"
-            value={currentUserId || ''}
+            value={userId || ''}
             disabled
           />
         </div>
@@ -156,8 +156,6 @@ export default function SessionReplay() {
         <iframe
           ref={iframeRef}
           src="/app/test.html?webvitals-tracking-switch=False"
-          width="878"
-          height="812"
           title="Session Replay"
           style={{ border: '1px solid black', marginTop: '20px' }}
         ></iframe>
