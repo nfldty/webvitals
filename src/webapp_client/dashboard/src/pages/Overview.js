@@ -89,7 +89,7 @@ const Overview = () => {
   useEffect(() => { fetchStats(); }, [filters, effectiveUserId]);
 
   // === RENDER FUNCTIONS ===
-  const renderClickInsights = (clickStats) => { if (!clickStats || Object.keys(clickStats).length === 0) return <p className="no-data">No click data</p>; const map = { 'Rage_Click': FiAlertCircle, 'Dead_Click': FiMousePointer, 'Quick_Back': FiChevronsRight }; return ( <div className="insight-list"> {Object.entries(clickStats).map(([k, v = {}]) => ( <InsightItem key={k} icon={map[k] || FiZap} value={formatPercent(v.percentage)} label={k.replace(/_/g, ' ')} subLabel={`${formatCount(v)} sess.`}/> ))} </div> ); };
+  const renderClickInsights = (clickStats) => { if (!clickStats || Object.keys(clickStats).length === 0) return <p className="no-data">No click data</p>; const map = { 'Rage_Click': FiAlertCircle, 'Dead_Click': FiMousePointer, 'Quick_Back': FiChevronsRight }; return ( <div className="insight-list"> {Object.entries(clickStats).map(([k, v = {}]) => ( <InsightItem key={k} icon={map[k] || FiZap} value={formatPercent(v.percentage)} label={k.replace(/_/g, ' ')} subLabel={`count: ${formatCount(v)}`}/> ))} </div> ); };
 
   // -- User Demographics (Chart + List) --
   const renderUserDemographics = (extraData) => {

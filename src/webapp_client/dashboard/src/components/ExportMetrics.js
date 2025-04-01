@@ -87,19 +87,26 @@ export default function ExportMetrics({ data }) {
   };
 
   const exportCSV = () => {
-    const formattedData = Object.fromEntries(
-      Object.entries(data).map(([key, value]) => {
-        if (typeof value === "object" && value !== null) {
-          return [formatMetricName(key), JSON.stringify(value)];
-        }
-        return [formatMetricName(key), value];
-      })
-    );
-
-    const csv = Papa.unparse([formattedData]);
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    // Build an array of rows in the format: [Metric, Value]
+    const tableData = Object.entries(data).flatMap(([key, value]) => {
+      if (key === "liveUsers") return [];
+      if (key === "clickStatistics") return formatClickStatistics(value);
+      if (key === "mostTraffic") return [["Most Traffic", formatTraffic(value)]];
+      if (key === "leastTraffic") return [["Least Traffic", formatTraffic(value)]];
+      if (key === "extraData") return formatExtraData(value);
+      return [[formatMetricName(key), String(value)]];
+    });
+  
+    const csvString = Papa.unparse({
+      fields: ["Metric", "Value"],
+      data: tableData,
+    });
+  
+    // Create a Blob and trigger a file download.
+    const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
     saveAs(blob, "report.csv");
   };
+  
 
   return (
     <div className="export-buttons" style={{ display: 'flex', gap: '10px' }}>
