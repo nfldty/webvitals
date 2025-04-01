@@ -27,7 +27,7 @@ export const Login = () => {
         // Delay navigation to allow cookies to be set properly
         setTimeout(() => {
           navigate('/app/dashboard');
-        }, 1000); // 1 second delay (adjust as needed)
+        }, 500); // 1 second delay (adjust as needed)
       }
     } catch (error) {
       console.error('Login error:', error);

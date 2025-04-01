@@ -26,7 +26,7 @@ export default function SessionReplay() {
   // Fetch sessions for the current user
   const fetchSessions = async () => {
     try {
-      const res = await api.get('/sessions', { params: { userId:currentUserId } });
+      const res = await api.get('/sessions', { params: { userId: currentUserId } });
       setSessions(res.data);
     } catch (error) {
       console.error('Error fetching sessions:', error);
@@ -44,6 +44,13 @@ export default function SessionReplay() {
       console.error('Error fetching session events:', error);
     }
   };
+
+  // Trigger fetchSessionEvents whenever selectedSession updates
+  useEffect(() => {
+    if (selectedSession) {
+      fetchSessionEvents();
+    }
+  }, [selectedSession]);
 
   // Send the next event to the iframe
   const sendNextEvent = () => {
@@ -79,8 +86,7 @@ export default function SessionReplay() {
 
   const handleSessionSelect = (e) => {
     setSelectedSession(e.target.value);
-    fetchSessionEvents();
-  }
+  };
 
   return (
     <div className="form-container">
@@ -102,7 +108,7 @@ export default function SessionReplay() {
             <label className="input-label">Select Session</label>
             <select
               value={selectedSession}
-              onChange={(e) => handleSessionSelect(e)}
+              onChange={handleSessionSelect}
               className="input-field"
             >
               <option value="">-- Select --</option>
@@ -112,9 +118,6 @@ export default function SessionReplay() {
                 </option>
               ))}
             </select>
-            {/* <button className="btn" onClick={fetchSessionEvents}>
-              Load Session
-            </button> */}
           </div>
         )}
 
