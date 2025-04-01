@@ -5,7 +5,7 @@ import api from '../utils/api';
 import '../style.css';
 
 export default function SessionReplay() {
-  const { userId } = useAuth();
+  const { currentUserId } = useAuth();
   const [sessions, setSessions] = useState([]);
   const [selectedSession, setSelectedSession] = useState('');
   const [events, setEvents] = useState([]);
@@ -18,15 +18,15 @@ export default function SessionReplay() {
 
   // Automatically fetch sessions when userId is available
   useEffect(() => {
-    if (userId) {
+    if (currentUserId) {
       fetchSessions();
     }
-  }, [userId]);
+  }, [currentUserId]);
 
   // Fetch sessions for the current user
   const fetchSessions = async () => {
     try {
-      const res = await api.get('/sessions', { params: { userId } });
+      const res = await api.get('/sessions', { params: { userId:currentUserId } });
       setSessions(res.data);
     } catch (error) {
       console.error('Error fetching sessions:', error);
@@ -85,7 +85,7 @@ export default function SessionReplay() {
           <input
             type="text"
             className="input-field"
-            value={userId || ''}
+            value={currentUserId || ''}
             disabled
           />
         </div>
@@ -101,7 +101,7 @@ export default function SessionReplay() {
               <option value="">-- Select --</option>
               {sessions.map((session) => (
                 <option key={session.id} value={session.id}>
-                  {session.id} - {new Date(session.start_time).toLocaleString()}
+                  {session.id} - {new Date(session.startTime).toLocaleString()}
                 </option>
               ))}
             </select>

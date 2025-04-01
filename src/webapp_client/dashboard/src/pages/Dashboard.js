@@ -10,19 +10,17 @@ import Heatmap from './Heatmap';
 // Header component import (keep from new version)
 import DashboardHeader from '../components/DashboardHeader';
 // Auth context import (common)
-import { useAuth } from '../context/AuthContext';
 // ProtectedRoute import (keep from new version)
+import api from '../utils/api'; // API utility for making requests
 import ProtectedRoute from '../components/ProtectedRoute';
 
 export const Dashboard = () => {
   const [page, setPage] = useState("overview");
   const navigate = useNavigate();
-  const { logout } = useAuth(); // Use auth context
 
   // Logout Handler (common logic)
   const handleLogout = () => {
-    console.log("User logged out"); // Keep log from new version
-    logout();
+    api.post('/auth/logout'); // Call the logout API
     navigate('/app/login'); // Redirect to login
   };
 

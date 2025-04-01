@@ -27,8 +27,7 @@ export const Login = () => {
     try {
       const response = await api.post('/auth/login', { username, password });
       if (response.status === 200) {
-        const token = response.data.token;
-        login(token);
+
         navigate('/app/dashboard');
       }
       // No explicit else needed if error status codes throw exceptions
