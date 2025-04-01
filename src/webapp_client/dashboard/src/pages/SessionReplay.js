@@ -25,7 +25,10 @@ export default function SessionReplay() {
       console.error('Error fetching sessions:', error);
     }
   };
-  fetchSessions();
+  
+  useEffect(() => {
+    fetchSessions();
+  }, []);
 
   // Fetch events for the selected session
   const fetchSessionEvents = async () => {
