@@ -62,7 +62,7 @@ async function getAveragePagesPerSession(userId, filter) {
     // Calculate the average pages per session
     const averagePagesPerSession = totalSessions === 0 ? 0 : totalPages / totalSessions;
 
-    return averagePagesPerSession < 1 ? 1 : averagePagesPerSession.toFixed(); // Ensure at least 1 page per session
+    return averagePagesPerSession < 1 ? 0 : averagePagesPerSession.toFixed(); // Ensure at least 1 page per session
   } catch (error) {
     console.error('Error fetching average pages per session for user:', error);
     throw error;

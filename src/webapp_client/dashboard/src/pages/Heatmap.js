@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import api from '../utils/api';
-import { useAuth } from '../context/AuthContext';
-
-const screenSize = { width: 878, height: 812 };
 
 const Heatmap = () => {
   const iframeRef = useRef(null);
@@ -46,8 +43,6 @@ const Heatmap = () => {
         <iframe
           ref={iframeRef}
           src="/app/test.html?webvitals-tracking-switch=False"
-          width={screenSize.width}
-          height={screenSize.height}
           style={{ border: '1px solid #ddd', marginTop: '20px' }}
           onLoad={() => {
             console.log("Iframe loaded");
