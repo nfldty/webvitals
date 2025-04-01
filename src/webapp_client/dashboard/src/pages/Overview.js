@@ -142,8 +142,8 @@ const Overview = () => {
 
     // Process items first
     const items = trafficData.map(i => ({
-        fullLabel: (i.pageUrl || i.referrer || 'Unknown'), // Store full URL for tooltip
-        displayLabel: formatPageUrl(i.pageUrl || i.referrer || 'Unknown'), // Formatted/Truncated label
+        fullLabel: (i.pageUrl || i.referrer || 'Direct'), // Store full URL for tooltip
+        displayLabel: formatPageUrl(i.pageUrl || i.referrer || 'Direct'), // Formatted/Truncated label
         count: formatCount(i)
     })).filter(item => item.displayLabel && item.count > 0);
 
