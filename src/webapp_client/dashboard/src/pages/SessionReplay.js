@@ -62,6 +62,8 @@ export default function SessionReplay() {
   // Start replaying events
   const startReplay = () => {
     if (isPlaying || events.length === 0) return;
+    // Reset the event index so that the session restarts
+    eventIndexRef.current = 0;
     setIsPlaying(true);
     sendNextEvent();
     intervalRef.current = setInterval(() => {
@@ -74,6 +76,11 @@ export default function SessionReplay() {
     clearInterval(intervalRef.current);
     setIsPlaying(false);
   };
+
+  const handleSessionSelect = (e) => {
+    setSelectedSession(e.target.value);
+    fetchSessionEvents();
+  }
 
   return (
     <div className="form-container">
@@ -95,7 +102,7 @@ export default function SessionReplay() {
             <label className="input-label">Select Session</label>
             <select
               value={selectedSession}
-              onChange={(e) => setSelectedSession(e.target.value)}
+              onChange={(e) => handleSessionSelect(e)}
               className="input-field"
             >
               <option value="">-- Select --</option>
@@ -105,9 +112,9 @@ export default function SessionReplay() {
                 </option>
               ))}
             </select>
-            <button className="btn" onClick={fetchSessionEvents}>
+            {/* <button className="btn" onClick={fetchSessionEvents}>
               Load Session
-            </button>
+            </button> */}
           </div>
         )}
 

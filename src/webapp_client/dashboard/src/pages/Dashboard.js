@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // Icons for styled sidebar (keep from styled version)
 import { FiGrid, FiMap, FiPlayCircle, FiSettings, FiLogOut } from 'react-icons/fi';
+import { FaRegCopy } from 'react-icons/fa';
 import '../style.css'; // Ensure CSS is imported
 import SessionReplay from './SessionReplay';
 import Settings from './Settings';
@@ -35,8 +36,8 @@ export const Dashboard = () => {
         return <ProtectedRoute element={<Heatmap />} />;
       case "sessionReplay":
         return <ProtectedRoute element={<SessionReplay />} />;
-      case "settings":
-        return <ProtectedRoute element={<Settings />} />;
+      // case "settings":
+      //   return <ProtectedRoute element={<Settings />} />;
       default:
         // Default to Overview with protection
         return <ProtectedRoute element={<Overview />} />;
@@ -58,7 +59,7 @@ export const Dashboard = () => {
     <div className="dashboard-container">
       {/* Use DashboardHeader component from new logic */}
       {/* Apply dashboard-header class for styling from style.css */}
-      <DashboardHeader className="dashboard-header"/>
+      <DashboardHeader setPage={setPage} className="dashboard-header"/>
 
       <div className="dashboard-content">
          {/* Use styled sidebar structure */}
@@ -70,7 +71,7 @@ export const Dashboard = () => {
               <NavItem icon={FiGrid} label="Overview" pageName="overview" currentPage={page} setPage={setPage} />
               <NavItem icon={FiMap} label="Heatmap" pageName="heatmap" currentPage={page} setPage={setPage} />
               <NavItem icon={FiPlayCircle} label="Session Replay" pageName="sessionReplay" currentPage={page} setPage={setPage} />
-              <NavItem icon={FiSettings} label="Settings" pageName="settings" currentPage={page} setPage={setPage} />
+              {/* <NavItem icon={FiSettings} label="Settings" pageName="settings" currentPage={page} setPage={setPage} /> */}
             </ul>
           </nav>
           {/* Styled logout button structure */}

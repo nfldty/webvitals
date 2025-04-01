@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import FilterSelector from '../components/FilterSelector';
 import ExportMetrics from "../components/ExportMetrics";
+import EmbedSnippet from "../components/EmbedSnippet";
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 // Style.css assumed global
@@ -208,12 +209,12 @@ const Overview = () => {
   return (
      <div className="overview-container">
         {/* Snippet section */}
-        {!loading && !error && ( <div className="widget-card snippet-card"> <h3 className="bundle-title">Embed Widget</h3> <p>Insert this snippet into your web page's HTML:</p> <input type="text" readOnly value={snippet} onClick={(e) => e.target.select()} aria-label="Widget Snippet"/> </div> )}
- 
+        {/* {!loading && !error && ( <div className="widget-card snippet-card"> <h3 className="bundle-title">Embed Widget</h3> <p>Insert this snippet into your web page's HTML:</p> <input type="text" readOnly value={snippet} onClick={(e) => e.target.select()} aria-label="Widget Snippet"/> </div> )} */}
+        <EmbedSnippet loading={loading} error={error} snippet={snippet} />
          {/* Filter section */}
          <h2 className="section-label">Filter</h2>
          <div className="filters-bar"> <FilterSelector onApplyFilters={handleApplyFiltersFromSelector} /> </div>
-         <h2 className="section-label">Overview</h2>
+         <h1 className="section-label">Overview</h1>
          <div className="stats-bundles-grid">
               {loading && <div className="loading-message" style={{gridColumn: '1 / -1'}}>Loading...</div>}
               {!loading && error && <div className="error-message" style={{gridColumn: '1 / -1'}}>{error}</div>}
@@ -222,13 +223,14 @@ const Overview = () => {
                       <div className="metric-bundle-card"> <h3 className="bundle-title">Core Metrics</h3> <div className="bundle-content grid-3"> <SimpleMetric title="Total Sessions" value={formatNumber(stats.totalSessions)} /> <SimpleMetric title="Avg Pages/Session" value={formatNumber(stats.avgPagesPerSession, 1)} /> <SimpleMetric title="Live Users" value={formatNumber(stats.liveUsers)} /> </div> </div>
                       <div className="metric-bundle-card"> <h3 className="bundle-title">Performance</h3> <div className="bundle-content grid-2"> <SimpleMetric title="Avg Session Duration" value={formatNumber(stats.avgTotalTime, 1, 's')} /> <SimpleMetric title="Avg Time / Page" value={formatNumber(stats.avgTimePerPage, 1, 's')} /> </div> </div>
                       <div className="metric-bundle-card"> <h3 className="bundle-title">Engagement Insights</h3> {renderClickInsights(stats.clickStatistics)} </div>
+                      {/* Pass leastTraffic correctly */}
+                      <div className="metric-bundle-card"> <h3 className="bundle-title">Least Visited Pages</h3> {renderTrafficList(stats?.leastTraffic, "leastVisited", 5)} </div>
                       {/* Pass extraData correctly */}
                       <div className="metric-bundle-card large-card"> <h3 className="bundle-title">User Demographics</h3> <div className="bundle-content"> {renderUserDemographics(stats?.extraData)} </div> </div>
                       <div className="metric-bundle-card"> <h3 className="bundle-title">Top Referrers</h3> {renderTrafficList(stats?.extraData?.referrerUsage, "referrers", 5)} </div>
                       {/* Pass mostTraffic correctly */}
                       <div className="metric-bundle-card"> <h3 className="bundle-title">Most Visited Pages</h3> {renderTrafficList(stats?.mostTraffic, "mostVisited", 7)} </div>
-                      {/* Pass leastTraffic correctly */}
-                      <div className="metric-bundle-card"> <h3 className="bundle-title">Least Visited Pages</h3> {renderTrafficList(stats?.leastTraffic, "leastVisited", 5)} </div>
+                      
                   </>
               )}
               {!loading && !error && !stats && ( <div className="no-data" style={{gridColumn: '1 / -1'}}>No statistics data available.</div> )}

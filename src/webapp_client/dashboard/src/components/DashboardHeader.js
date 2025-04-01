@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext'; // Import useTheme hook
 import { FiSun, FiMoon } from 'react-icons/fi'; // Import icons
 // Removed direct style.css import, assuming it's imported globally (e.g., in App.js or index.js)
 
-export const DashboardHeader = () => {
+export const DashboardHeader = ( {setPage} ) => {
     // Get theme state and toggle function from context
     const { isDarkMode, toggleTheme } = useTheme();
 
@@ -12,7 +12,7 @@ export const DashboardHeader = () => {
         // Use header element with dashboard-header class
         <header className="dashboard-header">
             {/* Title */}
-            <h1>Webvitals</h1>
+            <h1 onClick={() => setPage("overview")}>Webvitals</h1>
             {/* Theme Toggle Button */}
             <button
                 onClick={toggleTheme} // Call toggle function on click
