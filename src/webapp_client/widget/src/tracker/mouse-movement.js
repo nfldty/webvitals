@@ -6,7 +6,7 @@ function trackMouseData() {
     let lastClickY = 0;
 
     let lastSentTime = 0;
-    const sendInterval = 10; // Send data every 10ms
+    const sendInterval = 1000/30; // Send data every for 30 fps
     let clickHistory = []; // Stores timestamps of recent clicks
     const RAGE_CLICK_THRESHOLD = 3; // Number of clicks to be considered rage clicks
     const RAGE_CLICK_TIMEFRAME = 1000; // Timeframe in milliseconds (1 second)
