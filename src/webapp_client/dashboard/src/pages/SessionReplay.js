@@ -35,7 +35,7 @@ export default function SessionReplay() {
       setEvents(res.data);
       eventIndexRef.current = 0;
     } catch (error) {
-      console.error('Error fetching session events:', error);
+      console.error('Error fetching user events:', error);
     }
   };
 
@@ -85,7 +85,7 @@ export default function SessionReplay() {
   return (
     <div className="form-container">
       <div className="form-wrapper">
-        <h1 className="page-heading">Session Replay</h1>
+        <h1 className="page-heading">User Replay</h1>
 
         <div className="input-group" style={{ marginBottom: '20px' }}>
           <label className="input-label">User ID</label>
@@ -99,7 +99,7 @@ export default function SessionReplay() {
 
         {sessions.length > 0 && (
           <div className="input-group" style={{ marginBottom: '20px' }}>
-            <label className="input-label">Select Session</label>
+            <label className="input-label">Select User</label>
             <select
               value={selectedSession}
               onChange={handleSessionSelect}
@@ -150,7 +150,7 @@ export default function SessionReplay() {
         <iframe
           ref={iframeRef}
           src="/app/test.html?webvitals-tracking-switch=False"
-          title="Session Replay"
+          title="User Replay"
           style={{ border: '1px solid black', marginTop: '20px' }}
         ></iframe>
       </div>

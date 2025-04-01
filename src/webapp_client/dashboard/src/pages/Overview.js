@@ -220,16 +220,16 @@ const Overview = () => {
               {!loading && error && <div className="error-message" style={{gridColumn: '1 / -1'}}>{error}</div>}
               {!loading && !error && stats && (
                   <>
-                      <div className="metric-bundle-card"> <h3 className="bundle-title">Core Metrics</h3> <div className="bundle-content grid-3"> <SimpleMetric title="Total Sessions" value={formatNumber(stats.totalSessions)} /> <SimpleMetric title="Avg Pages/Session" value={formatNumber(stats.avgPagesPerSession, 1)} /> <SimpleMetric title="Live Users" value={formatNumber(stats.liveUsers)} /> </div> </div>
-                      <div className="metric-bundle-card"> <h3 className="bundle-title">Performance</h3> <div className="bundle-content grid-2"> <SimpleMetric title="Avg Session Duration" value={formatNumber(stats.avgTotalTime, 1, 's')} /> <SimpleMetric title="Avg Time / Page" value={formatNumber(stats.avgTimePerPage, 1, 's')} /> </div> </div>
-                      <div className="metric-bundle-card"> <h3 className="bundle-title">Engagement Insights</h3> {renderClickInsights(stats.clickStatistics)} </div>
+                      <div className="metric-bundle-card"> <h3 className="bundle-title">Core Vitals</h3> <div className="bundle-content grid-3"> <SimpleMetric title="Total Users" value={formatNumber(stats.totalSessions)} /> <SimpleMetric title="Avg Page / User" value={formatNumber(stats.avgPagesPerSession, 1)} /> <SimpleMetric title="Live Users" value={formatNumber(stats.liveUsers)} /> </div> </div>
+                      <div className="metric-bundle-card"> <h3 className="bundle-title">Engagement Vitals</h3> <div className="bundle-content grid-2"> <SimpleMetric title="Avg User Duration" value={formatNumber(stats.avgTotalTime, 1, 's')} /> <SimpleMetric title="Avg Time / Page" value={formatNumber(stats.avgTimePerPage, 1, 's')} /> </div> </div>
+                      <div className="metric-bundle-card"> <h3 className="bundle-title">User Vitals</h3> {renderClickInsights(stats.clickStatistics)} </div>
                       {/* Pass leastTraffic correctly */}
-                      <div className="metric-bundle-card"> <h3 className="bundle-title">Least Visited Pages</h3> {renderTrafficList(stats?.leastTraffic, "leastVisited", 5)} </div>
+                      <div className="metric-bundle-card"> <h3 className="bundle-title">Lowest Page Vitals</h3> {renderTrafficList(stats?.leastTraffic, "leastVisited", 5)} </div>
                       {/* Pass extraData correctly */}
-                      <div className="metric-bundle-card large-card"> <h3 className="bundle-title">User Demographics</h3> <div className="bundle-content"> {renderUserDemographics(stats?.extraData)} </div> </div>
-                      <div className="metric-bundle-card"> <h3 className="bundle-title">Top Referrers</h3> {renderTrafficList(stats?.extraData?.referrerUsage, "referrers", 5)} </div>
+                      <div className="metric-bundle-card large-card"> <h3 className="bundle-title">Demographic Vitals</h3> <div className="bundle-content"> {renderUserDemographics(stats?.extraData)} </div> </div>
+                      <div className="metric-bundle-card"> <h3 className="bundle-title">Referral Vitals</h3> {renderTrafficList(stats?.extraData?.referrerUsage, "referrers", 5)} </div>
                       {/* Pass mostTraffic correctly */}
-                      <div className="metric-bundle-card"> <h3 className="bundle-title">Most Visited Pages</h3> {renderTrafficList(stats?.mostTraffic, "mostVisited", 7)} </div>
+                      <div className="metric-bundle-card"> <h3 className="bundle-title">Highest Page Vitals</h3> {renderTrafficList(stats?.mostTraffic, "mostVisited", 7)} </div>
                       
                   </>
               )}
