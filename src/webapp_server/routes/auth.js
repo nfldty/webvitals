@@ -78,7 +78,7 @@ router.post('/login', async (req, res) => {
       sameSite: 'Strict', // Ensures that the cookie is only sent in same-site requests
     });
 
-    res.json({ message: 'Login successful' });
+    res.json({ message: 'Login successful' , userId:user.id}); // Send user ID and username in the response
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Internal server error' });

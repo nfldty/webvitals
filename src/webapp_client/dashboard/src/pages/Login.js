@@ -25,9 +25,9 @@ export const Login = () => {
       const response = await api.post('/auth/login', { username, password });
       if (response.status === 200) {
         // Delay navigation to allow cookies to be set properly
-        setTimeout(() => {
-          navigate('/app/dashboard');
-        }, 500); // 1 second delay (adjust as needed)
+        console.log("login success",response.data)
+        localStorage.setItem('userId', response.data.userId); // Store user ID in local storage
+        navigate('/app/dashboard');
       }
     } catch (error) {
       console.error('Login error:', error);

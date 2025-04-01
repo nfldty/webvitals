@@ -6,7 +6,7 @@ const screenSize = { width: 878, height: 812 };
 
 const Heatmap = () => {
   const iframeRef = useRef(null);
-  const { currentUserId } = useAuth();
+  const userId = localStorage.getItem('userId');
   const [heatmapData, setHeatmapData] = useState(null);
   const [iframeLoaded, setIframeLoaded] = useState(false);
 
@@ -14,7 +14,7 @@ const Heatmap = () => {
   useEffect(() => {
     const fetchHeatmapData = async () => {
       try {
-        const response = await api.get(`/heatmap?userId=${currentUserId}`);
+        const response = await api.get(`/heatmap?userId=${userId}`);
         console.log("heatmapData", response.data.mouseCoordinates);
         setHeatmapData(response.data.mouseCoordinates);
       } catch (error) {

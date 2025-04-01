@@ -72,7 +72,7 @@ const Overview = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { userId } = useAuth();
+  const userId = localStorage.getItem('userId');
   const effectiveUserId = userId || "1";
   const snippet = `<script type="module" data-webvitals-widget src="http://localhost/widget/widget.js" data-user-id="${effectiveUserId}" defer></script>`;
 

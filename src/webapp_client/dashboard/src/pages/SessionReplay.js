@@ -5,7 +5,7 @@ import api from '../utils/api';
 import '../style.css';
 
 export default function SessionReplay() {
-  const { userId } = useAuth();
+  const userId = localStorage.getItem('userId');
   const [sessions, setSessions] = useState([]);
   const [selectedSession, setSelectedSession] = useState('');
   const [events, setEvents] = useState([]);
@@ -16,13 +16,6 @@ export default function SessionReplay() {
   const intervalRef = useRef(null);
   const eventIndexRef = useRef(0);
 
-  // Automatically fetch sessions when userId is available
-  useEffect(() => {
-    if (userId) {
-      fetchSessions();
-    }
-  }, [userId]);
-
   // Fetch sessions for the current user
   const fetchSessions = async () => {
     try {
@@ -32,6 +25,7 @@ export default function SessionReplay() {
       console.error('Error fetching sessions:', error);
     }
   };
+  fetchSessions();
 
   // Fetch events for the selected session
   const fetchSessionEvents = async () => {

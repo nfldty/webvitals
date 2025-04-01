@@ -48,11 +48,9 @@ const router = createBrowserRouter([
 // --- App Component (Wrap RouterProvider with ThemeProvider) ---
 function App() {
   return (
-    <AuthProvider>
       <ThemeProvider> {/* <--- Global ThemeProvider wraps RouterProvider */}
         <RouterProvider router={router} />
       </ThemeProvider>
-    </AuthProvider>
   );
 }
 
