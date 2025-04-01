@@ -19,8 +19,8 @@ router.get('/statistics', async (req, res) => {
         // Lazy-load metric functions only if needed or make sure they exist
         const metrics = require('../utils/metrics');
 
-        const mostTraffic = await metrics.getMostTraffic(userId, 1, req.query);
-        const leastTraffic = await metrics.getLeastTraffic(userId, 1, req.query);
+        const mostTraffic = await metrics.getMostTraffic(userId, 5, req.query);
+        const leastTraffic = await metrics.getLeastTraffic(userId, 5, req.query);
         const totalSessions = await metrics.getTotalSession(userId, req.query);
         const avgPagesPerSession = await metrics.getAveragePagesPerSession(userId, req.query);
         const liveUsers = await metrics.getLiveUsers(userId, req.query);

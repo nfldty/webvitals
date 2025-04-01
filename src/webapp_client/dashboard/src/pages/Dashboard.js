@@ -70,7 +70,7 @@ export const Dashboard = () => {
               {/* Use NavItem helper for styled list items */}
               <NavItem icon={FiGrid} label="Overview" pageName="overview" currentPage={page} setPage={setPage} />
               <NavItem icon={FiMap} label="Heatmap" pageName="heatmap" currentPage={page} setPage={setPage} />
-              <NavItem icon={FiPlayCircle} label="Session Replay" pageName="sessionReplay" currentPage={page} setPage={setPage} />
+              <NavItem icon={FiPlayCircle} label="User Replay" pageName="sessionReplay" currentPage={page} setPage={setPage} />
               {/* <NavItem icon={FiSettings} label="Settings" pageName="settings" currentPage={page} setPage={setPage} /> */}
             </ul>
           </nav>

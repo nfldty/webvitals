@@ -64,7 +64,7 @@ function applyFilters(prismaQuery, queryParams, session) {
       const match = queryParams.elapsed_time.trim().match(/^\s*(<=?|>=?|=)\s*(\d+(?:\.\d+)?)\s*$/);
       if (match) {
           const [, operator, valueStr] = match;
-          const value = parseFloat(valueStr);
+          const value = parseFloat(valueStr)*1000; // change to ms from seconds
           const prismaOperator = operatorMap[operator];
 
           if (prismaOperator && !isNaN(value)) {

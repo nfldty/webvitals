@@ -48,7 +48,7 @@ export default function FilterSelector({ oncli, onApplyFilters }) {
                 />
             </div>
             <div className="filter-group">
-                <label>Elapsed Time Filter</label>
+                <label>Time Spent (seconds): </label>
                 <input 
                   type="text" 
                   value={elapsedTime} 
