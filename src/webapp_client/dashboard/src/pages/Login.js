@@ -6,7 +6,6 @@ import DashboardHeader from '../components/DashboardHeader';
 
 export const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
