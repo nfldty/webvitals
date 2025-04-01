@@ -43,14 +43,6 @@ router.get('/heatmap', async (req, res) => {
                 message: 'Please provide a valid userId in the query string.',
             });
         }
-        // let url = await getMostTraffic(userId, 1);
-        // if (!url) {
-        //     return res.status(400).json({
-        //         error: 'Invalid userId',
-        //         message: 'Please provide a valid userId in the query string.',
-        //     });
-        // }
-        // url = url[0].pageUrl;
 
         // Fetch the mouse coordinates for the specified user
         const mouseCoordinates = await getMouseCoordinates(userId);

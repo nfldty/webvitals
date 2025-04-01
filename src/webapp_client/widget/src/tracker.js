@@ -136,8 +136,8 @@ function loadHeatmapScript(callback) {
     function updateHeatmap(heatmapData) {
         console.log("updating heatmap");
         const heatmapPoints = heatmapData.map(point => ({
-            x: point.x,
-            y: point.y,
+            x: point.x-75,
+            y: point.y+150,
             value: point.value
         }));
         
