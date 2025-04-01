@@ -113,7 +113,7 @@ async function getAverageTimePerPage(userId, filter) {
     });
 
     const averageTime = totalVisits === 0 ? 0 : totalTime / totalVisits; // Return average time
-    return Math.floor(averageTime / 1000);; // Return time in seconds
+    return (averageTime / 1000).toFixed(2); // Return time in seconds
   } catch (error) {
     console.error('Error fetching average time per page for user:', error);
     throw error;
@@ -132,7 +132,7 @@ async function getAverageTotalTime(userId, filter) {
       },
     }, filter));
 
-    const totalPageTime = timeRecords.reduce((sum, record) => sum + ((record.timeSpent || 0) / 1000), 0);
+    const totalPageTime = timeRecords.reduce((sum, record) => sum + (((record.leftAt - record.visitedAt) || 0) / 1000), 0);
 
     // Get unique session count
     const uniqueSessions = new Set(timeRecords.map(record => record.sessionId)).size;
@@ -140,7 +140,7 @@ async function getAverageTotalTime(userId, filter) {
     // Calculate average time per session
     const averageTimePerSession = uniqueSessions > 0 ? totalPageTime / uniqueSessions : 0;
 
-    return averageTimePerSession
+    return averageTimePerSession.toFixed(2)
   } catch (error) {
     console.error('Error fetching average total time for user:', error);
     throw error;
