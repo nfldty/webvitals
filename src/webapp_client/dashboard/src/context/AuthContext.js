@@ -1,60 +1,41 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import Cookies from 'js-cookie';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import api from '../utils/api'; // Your API setup
 
 // Create a context
 const AuthContext = createContext();
 
-// Create a custom hook to use the AuthContext
+// Custom hook to use the AuthContext
 export const useAuth = () => useContext(AuthContext);
 
-// Create the AuthProvider component
+// AuthProvider component
 export const AuthProvider = ({ children }) => {
-  const [authToken, setAuthToken] = useState(Cookies.get('authToken') || null);
-  const [userId, setUserId] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [loading, setLoading] = useState(true);  // Track the loading state
 
-  useEffect(() => {
-    if (authToken) {
-      const userId = getUserIdFromToken(authToken);
-      setUserId(userId);
-    } else {
-      setUserId(null);
-    }
-  }, [authToken]);
-
-  const getUserIdFromToken = (token) => {
+  // Function to fetch the current user ID from the backend
+  const fetchCurrentUserId = async () => {
     try {
-      const parts = token.split('.');
-      if (parts.length !== 3) return null;
-      const decodedPayload = atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'));
-      const payload = JSON.parse(decodedPayload);
-      return payload.id;
+      const response = await api.get('/get-user');
+      if (response.status === 200) {
+        setCurrentUserId(response.data.user.id); // Set user ID from the response
+      } else {
+        setCurrentUserId(null);  // If response isn't valid, set null
+      }
     } catch (error) {
-      return null;
+      console.error("Error fetching user ID:", error);
+      setCurrentUserId(null); // Set to null in case of error
+    } finally {
+      setLoading(false);  // Set loading to false when done
     }
   };
 
-  // Login function to store the token in cookies
-  const login = (token) => {
-    setAuthToken(token);
-    console.log('Auth token',token);
-    Cookies.set('authToken', token, { expires: 7, secure: false, sameSite: 'Strict' });
-    console.log('Cookies',Cookies.get('authToken'));
-  };
-
-  // get function to clear the token and userId
-  const logout = () => {
-    setAuthToken(null);
-    setUserId(null);
-    Cookies.remove('authToken');
-  };
-
-  // Function to get the current user ID
-  const getCurrentUserId = () => {
-    return userId;
-  };
+  // Use useEffect to call fetchCurrentUserId when the component mounts
+  useEffect(() => {
+    fetchCurrentUserId(); // Fetch user ID when provider mounts
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ authToken, userId, login, logout, getCurrentUserId }}>
+    <AuthContext.Provider value={{ currentUserId, loading }}>
       {children}
     </AuthContext.Provider>
   );

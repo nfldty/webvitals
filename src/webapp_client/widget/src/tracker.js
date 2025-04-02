@@ -120,13 +120,14 @@ function loadHeatmapScript(callback) {
             radius: 40,
             blur: 0.90,
             gradient: {
-                0.0: "rgba(0, 255, 255, 0)",
-                0.1: "rgb(0, 255, 255)",
-                0.3: "rgb(0, 191, 255)",
-                0.5: "rgb(0, 127, 255)",
-                0.7: "rgb(0, 63, 255)",
-                1.0: "rgb(0, 0, 255)"
+                0.0: "rgb(0, 0, 255)",     // Blue
+                0.1: "rgb(0, 127, 255)",   // Light Blue (Cyan)
+                0.2: "rgb(0, 255, 255)",   // Cyan
+                0.3: "rgb(0, 255, 127)",   // Light Green
+                0.4: "rgb(255, 255, 0)",   // Yellow
+                0.5: "rgb(255, 0, 0)"      // Red
             }
+            
           });
           updateHeatmap(event.data); // Update heatmap with received data
         }
@@ -135,8 +136,8 @@ function loadHeatmapScript(callback) {
     function updateHeatmap(heatmapData) {
         console.log("updating heatmap");
         const heatmapPoints = heatmapData.map(point => ({
-            x: point.x,
-            y: point.y,
+            x: point.x-75,
+            y: point.y+150,
             value: point.value
         }));
         

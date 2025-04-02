@@ -1,12 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import api from '../utils/api';
-import { useAuth } from '../context/AuthContext';
-
-const screenSize = { width: 878, height: 812 };
 
 const Heatmap = () => {
   const iframeRef = useRef(null);
-  const { getCurrentUserId } = useAuth();
+  const userId = localStorage.getItem('userId');
   const [heatmapData, setHeatmapData] = useState(null);
   const [iframeLoaded, setIframeLoaded] = useState(false);
 
@@ -14,7 +11,7 @@ const Heatmap = () => {
   useEffect(() => {
     const fetchHeatmapData = async () => {
       try {
-        const response = await api.get(`/heatmap?userId=${getCurrentUserId()}`);
+        const response = await api.get(`/heatmap?userId=${userId}`);
         console.log("heatmapData", response.data.mouseCoordinates);
         setHeatmapData(response.data.mouseCoordinates);
       } catch (error) {
@@ -46,8 +43,6 @@ const Heatmap = () => {
         <iframe
           ref={iframeRef}
           src="/app/test.html?webvitals-tracking-switch=False"
-          width={screenSize.width}
-          height={screenSize.height}
           style={{ border: '1px solid #ddd', marginTop: '20px' }}
           onLoad={() => {
             console.log("Iframe loaded");

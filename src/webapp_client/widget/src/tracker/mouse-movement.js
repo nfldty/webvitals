@@ -6,7 +6,7 @@ function trackMouseData() {
     let lastClickY = 0;
 
     let lastSentTime = 0;
-    const sendInterval = 1000/30; // 30 fps
+    const sendInterval = 1000/30; // Send data every for 30 fps
     let clickHistory = []; // Stores timestamps of recent clicks
     const RAGE_CLICK_THRESHOLD = 3; // Number of clicks to be considered rage clicks
     const RAGE_CLICK_TIMEFRAME = 1000; // Timeframe in milliseconds (1 second)
@@ -14,11 +14,10 @@ function trackMouseData() {
 
     function sendMouseMoveData(x, y) {
         const now = Date.now();
-        sendData('mouse_move', { "x": x, "y": y, "timestamp": now });
-        lastSentTime = now; // Update last sent time
-        // if (now - lastSentTime >= sendInterval) {
-            
-        // }
+        if (now - lastSentTime >= sendInterval) {
+            sendData('mouse_move', { x, y, timestamp: now });
+            lastSentTime = now;
+        }
     }
 
     function sendMouseClickData(x, y, isRage, isDead, isQuickBack) {

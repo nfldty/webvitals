@@ -5,7 +5,7 @@ import api from '../utils/api';
 import '../style.css';
 
 export default function SessionReplay() {
-  const { userId } = useAuth();
+  const userId = localStorage.getItem('userId');
   const [sessions, setSessions] = useState([]);
   const [selectedSession, setSelectedSession] = useState('');
   const [events, setEvents] = useState([]);
@@ -16,22 +16,19 @@ export default function SessionReplay() {
   const intervalRef = useRef(null);
   const eventIndexRef = useRef(0);
 
-  // Automatically fetch sessions when userId is available
-  useEffect(() => {
-    if (userId) {
-      fetchSessions();
-    }
-  }, [userId]);
-
   // Fetch sessions for the current user
   const fetchSessions = async () => {
     try {
-      const res = await api.get('/sessions', { params: { userId } });
+      const res = await api.get('/sessions', { params: { userId:userId } });
       setSessions(res.data);
     } catch (error) {
       console.error('Error fetching sessions:', error);
     }
   };
+  
+  useEffect(() => {
+    fetchSessions();
+  }, []);
 
   // Fetch events for the selected session
   const fetchSessionEvents = async () => {
@@ -41,9 +38,16 @@ export default function SessionReplay() {
       setEvents(res.data);
       eventIndexRef.current = 0;
     } catch (error) {
-      console.error('Error fetching session events:', error);
+      console.error('Error fetching user events:', error);
     }
   };
+
+  // Trigger fetchSessionEvents whenever selectedSession updates
+  useEffect(() => {
+    if (selectedSession) {
+      fetchSessionEvents();
+    }
+  }, [selectedSession]);
 
   // Send the next event to the iframe
   const sendNextEvent = () => {
@@ -62,11 +66,13 @@ export default function SessionReplay() {
   // Start replaying events
   const startReplay = () => {
     if (isPlaying || events.length === 0) return;
+    // Reset the event index so that the session restarts
+    eventIndexRef.current = 0;
     setIsPlaying(true);
     sendNextEvent();
     intervalRef.current = setInterval(() => {
       sendNextEvent();
-    }, 1000 / (60 * replaySpeed));
+    }, 1000 / (30 * replaySpeed));
   };
 
   // Pause replay
@@ -75,10 +81,14 @@ export default function SessionReplay() {
     setIsPlaying(false);
   };
 
+  const handleSessionSelect = (e) => {
+    setSelectedSession(e.target.value);
+  };
+
   return (
     <div className="form-container">
-      <div className="form-wrapper" style={{ maxWidth: '878px' }}>
-        <h1 className="page-heading">Session Replay</h1>
+      <div className="form-wrapper">
+        <h1 className="page-heading">User Replay</h1>
 
         <div className="input-group" style={{ marginBottom: '20px' }}>
           <label className="input-label">User ID</label>
@@ -92,22 +102,19 @@ export default function SessionReplay() {
 
         {sessions.length > 0 && (
           <div className="input-group" style={{ marginBottom: '20px' }}>
-            <label className="input-label">Select Session</label>
+            <label className="input-label">Select User</label>
             <select
               value={selectedSession}
-              onChange={(e) => setSelectedSession(e.target.value)}
+              onChange={handleSessionSelect}
               className="input-field"
             >
               <option value="">-- Select --</option>
               {sessions.map((session) => (
                 <option key={session.id} value={session.id}>
-                  {session.id} - {new Date(session.start_time).toLocaleString()}
+                  {session.id} - {new Date(session.startTime).toLocaleString()}
                 </option>
               ))}
             </select>
-            <button className="btn" onClick={fetchSessionEvents}>
-              Load Session
-            </button>
           </div>
         )}
 
@@ -146,9 +153,7 @@ export default function SessionReplay() {
         <iframe
           ref={iframeRef}
           src="/app/test.html?webvitals-tracking-switch=False"
-          width="878"
-          height="812"
-          title="Session Replay"
+          title="User Replay"
           style={{ border: '1px solid black', marginTop: '20px' }}
         ></iframe>
       </div>

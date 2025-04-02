@@ -62,7 +62,7 @@ async function getAveragePagesPerSession(userId, filter) {
     // Calculate the average pages per session
     const averagePagesPerSession = totalSessions === 0 ? 0 : totalPages / totalSessions;
 
-    return averagePagesPerSession;
+    return averagePagesPerSession < 1 ? 0 : averagePagesPerSession.toFixed(); // Ensure at least 1 page per session
   } catch (error) {
     console.error('Error fetching average pages per session for user:', error);
     throw error;
@@ -113,7 +113,7 @@ async function getAverageTimePerPage(userId, filter) {
     });
 
     const averageTime = totalVisits === 0 ? 0 : totalTime / totalVisits; // Return average time
-    return averageTime / 1000; // Return time in seconds
+    return (averageTime / 1000).toFixed(2); // Return time in seconds
   } catch (error) {
     console.error('Error fetching average time per page for user:', error);
     throw error;
@@ -123,22 +123,24 @@ async function getAverageTimePerPage(userId, filter) {
 // Function to get the average total time spent for a specific user
 async function getAverageTotalTime(userId, filter) {
   try {
-    const timeRecords = await prisma.timeSpent.findMany(filterUtil({
+    const timeRecords = await prisma.pageVisit.findMany(filterUtil({
       where: {
         userId: userId, // Filter by userId
+        leftAt: {
+          not: null, // Only consider visits where the user left the page
+        },
       },
     }, filter));
 
-    let totalTime = 0;
-    let totalRecords = 0;
+    const totalPageTime = timeRecords.reduce((sum, record) => sum + (((record.leftAt - record.visitedAt) || 0) / 1000), 0);
 
-    timeRecords.forEach(record => {
-      totalTime += record.elapsedTime; // Add up elapsed time
-      totalRecords += 1;
-    });
+    // Get unique session count
+    const uniqueSessions = new Set(timeRecords.map(record => record.sessionId)).size;
+    
+    // Calculate average time per session
+    const averageTimePerSession = uniqueSessions > 0 ? totalPageTime / uniqueSessions : 0;
 
-    const averageTime = totalRecords === 0 ? 0 : totalTime / totalRecords;
-    return averageTime; // This will return average time in the units defined in your model (e.g., seconds)
+    return averageTimePerSession.toFixed(2)
   } catch (error) {
     console.error('Error fetching average total time for user:', error);
     throw error;

@@ -6,7 +6,7 @@ require('dotenv').config();
 
 const router = express.Router();
 
-
+// Register Route (No change)
 router.post('/register', async (req, res) => {
   const { username, password } = req.body;
 
@@ -41,7 +41,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-
+// Login Route (Modified)
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -50,13 +50,11 @@ router.post('/login', async (req, res) => {
   }
 
   try {
-
     const user = await prisma.user.findUnique({
       where: {
         username: username,
       },
     });
-
 
     if (!user) {
       return res.status(401).json({ error: 'Invalid username or password' });
@@ -73,13 +71,26 @@ router.post('/login', async (req, res) => {
       { expiresIn: '1h' }
     );
 
+    // Set the token in a cookie
+    res.cookie('authToken', token, {
+      httpOnly: true, // Ensures that the cookie is not accessible via JavaScript
+      maxAge: 3600000, // Cookie expires in 1 hour (1 hour = 3600000 ms)
+      sameSite: 'Strict', // Ensures that the cookie is only sent in same-site requests
+    });
 
-    res.json({ message: 'Login successful', token });
+    res.json({ message: 'Login successful' , userId:user.id}); // Send user ID and username in the response
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
+router.post('/logout', (req, res) => {
+  res.clearCookie('authToken'); // Clear the authToken cookie
+  res.json({ message: 'Logout successful' });
+});
+
+
+// Middleware to protect routes
 
 module.exports = router;
